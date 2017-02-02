@@ -168,6 +168,7 @@
  */
 	//Configure::write('Cache.check', true);
 
+	Configure::write('Routing.prefixes', array('administrator'));
 /**
  * Enable cache view prefixes.
  *
@@ -177,6 +178,7 @@
  * Note: The final cache file name will then be `prefix_cachefilename`.
  */
 	//Configure::write('Cache.viewPrefix', 'prefix');
+
 
 /**
  * Session configuration.
