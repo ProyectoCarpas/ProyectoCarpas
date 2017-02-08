@@ -8,9 +8,8 @@ class AppController extends Controller {
     public $components = array(
 
     	'Email',
-
-		//'DebugKit.Toolbar',
 		'Session',
+		//'DebugKit.Toolbar',
 
 		'Auth' => array(
 
@@ -20,7 +19,6 @@ class AppController extends Controller {
 	                                'userModel' => 'User',
                                     'fields' => array('username' => 'email',
                                                       'password' => 'password'),
-
                                     'scope' => array(
                                                      array('User.status' => 'Active')
                                     )
@@ -31,7 +29,6 @@ class AppController extends Controller {
             'logoutRedirect' => array('controller' => 'publics', 'action' => 'index'),
 
 			'authError' => 'Accedo restringido',
-
 			'loginError' => false,
 
 			'authorize' => array('Controller')

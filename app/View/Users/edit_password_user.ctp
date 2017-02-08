@@ -1,104 +1,20 @@
-<?php echo $this->Html->script('validation_client_side', array('inline' => false)); ?>
-
-<!-- Le cambie el nombre para no confundir con el "bootstrap.js" -->
-<?php echo $this->Html->script('bootstrap_validation_client_side', array('inline' => false)); ?>
-
-<?php echo $this->Html->css('validation_client_side', array('inline' => false)); ?>
-
-<?php echo $this->Html->css('styles/styles_USERS_edit_pass', array('inline' => false)); ?>
-
-
-<?php $this->assign('head_description', 'Editar Pass - Info Parana. Minorista y Compra Online de Articulos de Informatica - Parana, Entre Rios - Tel: 0343 - 4000000. ');?>
-
+<?php $this->assign('head_description', 'Editar Pass');?>
 
 <div class="container well">
 
-    <div class="col-md-3 lado_izquierdo">
-
-            <div class="row">
-
-                  <div class="col-xs-12">
-
-                      <div class="list-group">
-
-                          <div class="list-group-item titulo_panel"> Operaciones Usuario</div>
-
-
-                          <?php echo $this->Html->link('<span class="glyphicon glyphicon-eye-open"></span> Detalles',
-
-                                                                          array('controller' => 'users',
-                                                                                'action' => 'view',
-                                                                                $this->Session->read('Auth.User.id')),
-
-                                                                          array('class' =>'list-group-item',
-                                                                                'escape' => false));  ?>
-
-                          <?php echo $this->Html->link('<span class="glyphicon glyphicon-edit"></span> Editar Perfil',
-
-                                                                          array('controller' => 'users',
-                                                                                'action' => 'edit',
-                                                                                $this->Session->read('Auth.User.id')),
-
-                                                                          array('class' =>'list-group-item',
-                                                                                'escape' => false));  ?>
-
-                          <?php echo $this->Html->link('<span class="glyphicon glyphicon-alert"></span> Editar Contraseña',
-
-                                                                          array('controller' => 'users',
-                                                                                'action' => 'edit_pass',
-                                                                                $this->Session->read('Auth.User.id')),
-
-                                                                          array('class' =>'list-group-item active',
-                                                                                'escape' => false));  ?>
-
-                          <?php echo $this->Html->link('<span class="glyphicon glyphicon-remove"></span> Eliminar Cuenta',
-
-                                                                          array('controller' => 'users',
-                                                                                'action' => 'cambiar_status',
-                                                                                $this->Session->read('Auth.User.id')),
-
-                                                                          array('class' =>'list-group-item',
-                                                                                'escape' => false),
-
-                                                                  sprintf('Esta seguro que desea eliminar su Cuenta? Solo el Administrador será capaz de restaurarla.'));?>
-
-                          <?php if($this->Html->usuario()){ ?>
-
-                            <?php echo $this->Html->link( '<span class="glyphicon glyphicon-shopping-cart"></span> Mis Compras',
-
-                                                                            array('controller' => 'compras',
-                                                                                  'action' => 'lista_compras_user',
-                                                                                  $this->Session->read('Auth.User.id')),
-
-                                                                            array('class' =>'list-group-item',
-                                                                                  'escape' => false));
-                          }?>
-
-                      </div>
-                  </div>
-
-            </div> <!-- Cierra row-->
-
-    </div> <!-- Cierra lado izquierdo-->
-
-    <!-- /////////////////////////////////////////////////////////////////////////////// -->
-
-
-    <!-- Le dedico toda la fila al titulo -->
+       <!-- Le dedico toda la fila al titulo -->
     <div class="col-md-9 lado_derecho">
 
         <?php echo $this->Form->create('User', array('id' => 'edit_pass',
                                                      'class' => 'form-horizontal',
 
                                                      'inputDefaults' => array(
-
                                                                         'div' => array(
                                                                                        'class' => 'form-group has-feedback'
                                                                                       ),
                                                                         'class' => 'form-control',
-
                                                                         'autocomplete' => 'off'
-                                                                        ),
+                                                                        )
                                                     ));
         ?>
 
@@ -119,7 +35,7 @@
 
                 <!-- Campo ID y campo usado para el LOGUIN los debemos poner como HIDDEN -->
                 <?php echo $this->Form->hidden('id'); ?>
-                <?php echo $this->Form->hidden('username'); ?>
+                <?php echo $this->Form->hidden('mail'); ?>
 
 
                 <?php echo $this->Form->input('old_password', array('between' => '<div class="col-md-5">',
