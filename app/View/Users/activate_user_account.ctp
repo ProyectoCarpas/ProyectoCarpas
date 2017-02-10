@@ -1,4 +1,3 @@
-<?php echo $this->Html->css('styles/styles_USERS_activar_cuenta', array('inline' => false)); ?>
 
 <div class="container well">
 

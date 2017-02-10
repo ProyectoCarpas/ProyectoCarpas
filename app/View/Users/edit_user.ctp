@@ -28,7 +28,7 @@
 
                 <div class="col-xs-12">
 
-                    <?php echo $this->Form->hidden('id'); ?>
+                    <?php //echo $this->Form->hidden('id'); ?>
 
                     <?php echo $this->Form->input('email', array('between' => '<div class="col-sm-9 col-md-7 col-lg-6">',
                                              'after' =>   '</div>',

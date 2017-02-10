@@ -5,16 +5,23 @@ class AppHelper extends Helper {
 
 	public $helpers = array('Session');
 
-    public  function isUserRegistered() {
+	public  function isUserLogged() {
 
-	        if( $this->Session->check('Auth.User') AND $this->Session->read('Auth.User.role_id') == '2'){
+	        if( $this->Session->check('Auth.User') AND ($this->Session->read('Auth.User.role_id') == Configure::read('administrator_rol_user') || $this->Session->read('Auth.User.role_id') == Configure::read('general_rol_user'))){
+	        	return true;
+		    }
+    }
+
+    public  function isGeneralUser() {
+
+	        if( $this->Session->check('Auth.User') AND $this->Session->read('Auth.User.role_id') == Configure::read('general_rol_user')){
 	        	return true;
 		    }
 	}
 
-    public  function isUserAdmin() {
+    public  function isAdminUser() {
 
-	        if( $this->Session->check('Auth.User') AND $this->Session->read('Auth.User.role_id') == '1'){
+	        if( $this->Session->check('Auth.User') AND $this->Session->read('Auth.User.role_id') == Configure::read('administrator_rol_user')){
 	        	return true;
 		    }
     }

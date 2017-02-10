@@ -59,8 +59,8 @@ Cache::config('default', array('engine' => 'File'));
  * Inflector::rules('plural', array('rules' => array(), 'irregular' => array(), 'uninflected' => array()));
  *
  */
-Configure::write('administrator_Rol_User','1');
-Configure::write('general_Rol_User','2');
+Configure::write('administrator_rol_user','1');
+Configure::write('general_rol_user','2');
 
 /**
  * Plugins need to be loaded manually, you can either load them one by one or all of them in a single call
