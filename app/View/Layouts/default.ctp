@@ -19,10 +19,10 @@
 <body>
 	<div id="container">
 		<div id="header">
-
+			<?php echo $this->element('upper_bar'); ?>
+			<?php echo $this->Session->flash(); ?>
 		</div>
 		<div id="content">
-			<?php echo $this->Session->flash(); ?>
 			<?php echo $this->fetch('content'); ?>
 		</div>
 		<div id="footer">

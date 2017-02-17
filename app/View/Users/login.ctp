@@ -13,7 +13,8 @@
 	echo $this->Form->end('Sign In');
 
 
-
-
-	echo $this->Html->link('ADD', array('controller' => 'users', 'action' => 'addUser'));
 ?>
+
+<h2> Nuevo usuario </h2>
+<?php echo $this->Html->link('ADD', array('controller' => 'users', 'action' => 'addUser'));  ?>
+

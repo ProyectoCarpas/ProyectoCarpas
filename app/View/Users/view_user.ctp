@@ -5,6 +5,11 @@
 
     <div class="row">
 
+        <div class="col-md-3">
+
+            <?php echo $this->element('user_actions_menu'); ?>
+        </div>
+
         <div class="col-md-9 lado_derecho">
 
             <div class="row titulo">

@@ -6,14 +6,14 @@ class UsersController extends AppController {
 	public function beforeFilter() {
 
 		parent:: beforeFilter();
-		$this->Auth->allow('login','logout','addUser', 'activateUserAccount', 'forgetUserPassword', 'resetUserPassword'  /*, 'resendUserConfirmationEmail', */);
+		$this->Auth->allow('login','logout','addUser', 'activateUserAccount', 'forgetUserPassword', 'resetUserPassword'/*, 'reSendUserConfirmationEmail'*/);
 	}
 
 	public function isAuthorized($user){
 
 		if(in_array($this->action, array('viewUser','editUser','editPasswordUser','deleteUser'))){
 
-			// User trying to type his own ID.
+			// If user type his own ID.
 			if(isset($this->request->params['pass'][0])){
 
 				if($user['id'] == $this->request->params['pass'][0]){
@@ -128,7 +128,10 @@ class UsersController extends AppController {
 			$this->Email->send();
 
 			$this->Session->setFlash('Revise su correo para activar la cuenta','flash_success');
-			return $this->redirect(array('controller'=>'users','action'=>'login'));
+
+			// These 2 values are needed to re-send the confirmation email if something fail.
+			// Sino podria guardar estas 2 variables en session si se complica mucho esto.
+			return $this->redirect(array('controller'=>'users','action'=>'check_email', $ms, $this->request->data['User']['email']));
 
 			//============EndEmail=============//
 		}
@@ -165,7 +168,6 @@ class UsersController extends AppController {
 		}
 
 	}
-
 
 	public function viewUser($id = null) {
 

@@ -2,6 +2,11 @@
 
 <div class="container well">
 
+    <div class="col-md-3">
+
+            <?php echo $this->element('user_actions_menu'); ?>
+    </div>
+
        <!-- Le dedico toda la fila al titulo -->
     <div class="col-md-9 lado_derecho">
 
