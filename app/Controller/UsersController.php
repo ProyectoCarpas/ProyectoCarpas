@@ -6,27 +6,25 @@ class UsersController extends AppController {
 	public function beforeFilter() {
 
 		parent:: beforeFilter();
-		$this->Auth->allow('login','logout','addUser', 'activateUserAccount', 'forgetUserPassword', 'resetUserPassword'/*, 'reSendUserConfirmationEmail'*/);
+		$this->Auth->allow('login', 'logout', 'addUser', 'activateUserAccount', 'forgetUserPassword', 'resetUserPassword', 'confirmationAndResendUserEmailActivation');
 	}
 
-	public function isAuthorized($user){
+	public function isAuthorized($user) {
 
-		if(in_array($this->action, array('viewUser','editUser','editPasswordUser','deleteUser'))){
+		if(in_array($this->action, array('viewUser', 'editUser', 'editUserPassword', 'deleteUser'))) {
 
-			// If user type his own ID.
-			if(isset($this->request->params['pass'][0])){
+			// If user entered his own ID.
+			if(isset($this->request->params['pass'][0])) {
 
 				if($user['id'] == $this->request->params['pass'][0]){
-
 					return true;
 				}
 			}
 		}
 
-		if(in_array($this->action, array('administrator_changeUserAccoutStatus', 'administrator_deleteUser' /*, administratro_searchUser'*/))){
+		if(in_array($this->action, array('administrator_changeUserAccoutStatus', 'administrator_deleteUser', 'administrator_searchUser'))) {
 
-			if($this->Session->check('Auth.User') AND $this->Session->read('Auth.User.role_id') == Configure::read('administrator_rol_user')){
-
+			if($this->Session->check('Auth.User') AND $this->Session->read('Auth.User.role_id') == Configure::read('administrator_rol_user')) {
 				return true;
 			}
 		}
@@ -36,45 +34,45 @@ class UsersController extends AppController {
 	}
 
 
-
-	public function login(){
+	public function login() {
 
 		$this->set('title_for_layout', 'Carpas - Login');
-		$this->User->recursive = -1;
 
-		if ($this->request->is('post')) {
+		if($this->request->is('post')) {
 
-			if(!($user = $this->User->findByemail($this->request->data['User']['email']))){
+			$this->User->recursive = -1;
+
+			if(!($user = $this->User->findByemail($this->request->data['User']['email']))) {
 
 				unset($this->request->data['User']['email']);
 				unset($this->request->data['User']['password']);
-				$this->Session->setFlash('Usuario inexistente','flash_error');
+		
+				$this->Session->setFlash('Usuario inexistente', 'flash_error');
 				return;
 			}
-
-			
 
 			if(!$this->Auth->login()) {
 
 				unset($this->request->data['User']['password']);
-				$this->Session->setFlash('Contraseña incorrecta','flash_error');
+		
+				$this->Session->setFlash('Contraseña incorrecta', 'flash_error');
 				return;
 			}
 
-			$this->Session->setFlash('Usuario logueado','flash_success');
-			$this->redirect($this->Auth->redirectUrl());
+			$this->Session->setFlash('Usuario logueado', 'flash_success');
+			return $this->redirect($this->Auth->redirectUrl());
 		}
 	}
 
 
-	public function logout(){
+	public function logout() {
 
-		$this->Session->setFlash('Sesion finalizada','flash_success');
-		$this->redirect($this->Auth->logout());
+		$this->Session->setFlash('Sesion finalizada', 'flash_success');
+		return $this->redirect($this->Auth->logout());
 	}
 
 
-	public function addUser(){
+	public function addUser() {
 
 		$this->set('title_for_layout', 'Nuevo Usuario');
 
@@ -82,20 +80,27 @@ class UsersController extends AppController {
 
 			$this->User->create();
 
+			if(!$this->checkRequiredFieldsForm($this->request->data['User'], array('email', 'first_name', 'last_name', 'date_of_birth', 'cell_number', 'password', 'password_confirm'))) {
+
+				throw new BadRequestException('Formulario Inválido');
+			}
+
 			$key = Security::hash(String::uuid(), 'sha512', true);
-			$hash = sha1($this->request->data['User']['email'].rand(0,100));
-			$url = Router::url( array('controller'=>'users', 'action'=>'activateUserAccount'), true ).'/'.$key.'#'.$hash;
-			$ms = $url;
-			$ms = wordwrap($ms, 1000);
+			$hash = sha1($this->request->data['User']['email'].rand(0, 100));
+			
+			$urlForActivation = Router::url( array('controller'=>'users', 'action'=>'activateUserAccount'), true ).'/'.$key.'#'.$hash;
+			$urlForActivation = wordwrap($urlForActivation, 1000);
 
 			$this->request->data['User']['token_hash'] = $key;
 
-			// General user rol by default
+			// 'General rol user' by default
 			$this->request->data['User']['role_id'] = Configure::read('general_rol_user');
 
 			$this->request->data['User']['status'] = 'Inactive';
 
-			if(!($this->User->save($this->request->data))) {
+			$this->request->data['User']['id'] = String::uuid();
+
+			if(!($this->User->save($this->request->data, true, array('id', 'email', 'first_name', 'last_name', 'date_of_birth', 'cell_number', 'status', 'password', 'token_hash', 'role_id')))) {
 
 				$this->Session->setFlash('Hubo un error. No se pudo crear el Usuario', 'flash_error');
 				return;
@@ -110,7 +115,7 @@ class UsersController extends AppController {
 				'username'=> 'el.viejo.martin.webmaster@gmail.com',
 				'password'=> 'fedora1234',
 				'transport' => 'Smtp'
-				);
+			);
 
 			$this->Email->template = 'activate_user_account_template';
 
@@ -123,51 +128,106 @@ class UsersController extends AppController {
 			$this->Email->sendAs = 'both';
 			$this->Email->delivery = 'smtp';
 
-			$this->set('ms', $ms);
+			$this->set(compact('urlForActivation'));
 
 			$this->Email->send();
 
-			$this->Session->setFlash('Revise su correo para activar la cuenta','flash_success');
+			$this->Session->setFlash('Revise su correo para activar la cuenta', 'flash_success');
 
-			// These 2 values are needed to re-send the confirmation email if something fail.
-			// Sino podria guardar estas 2 variables en session si se complica mucho esto.
-			return $this->redirect(array('controller'=>'users','action'=>'check_email', $ms, $this->request->data['User']['email']));
+			// Save data in Session.
+			$this->Session->write('userEmail', $this->request->data['User']['email']);
+			$this->Session->write('urlForActivation', $urlForActivation);
+
+			return $this->redirect(array('controller'=>'users', 'action'=>'confirmationAndResendUserEmailActivation'));
 
 			//============EndEmail=============//
 		}
 	}
 
+
+	public function confirmationAndResendUserEmailActivation($reSend = null) {
+
+		// Read variables Session
+		$urlForActivation = $this->Session->read('urlForActivation');
+		$userEmail = $this->Session->read('userEmail');
+
+		// If they session data was deleted, it means the account has been already activated.
+		if(!$urlForActivation && !$userEmail) {
+
+			$this->Session->setFlash('Su cuenta ya ha sido activada', 'flash_success');
+			return $this->redirect('/');
+		}
+
+		if($reSend == 1) {
+
+            //============Email================//
+			// SMTP Options. Configuration Email component.
+			$this->Email->smtpOptions = array(
+				'host' => 'ssl://smtp.gmail.com',
+				'port' => 465,
+				'timeout'=> '30',
+				'username'=> 'el.viejo.martin.webmaster@gmail.com',
+				'password'=> 'fedora1234',
+				'transport' => 'Smtp'
+			);
+
+			$this->Email->template = 'activate_user_account_template';
+
+			$this->Email->from = 'el.viejo.martin.webmaster@gmail.com';
+
+			$this->Email->to = 'Reenvio <'.$userEmail.'>';
+
+			$this->Email->subject = ' Reenvio - Activar Cuenta';
+
+			$this->Email->sendAs = 'both';
+			$this->Email->delivery = 'smtp';
+
+			$this->set(compact('urlForActivation'));
+
+			$this->Email->send();
+
+			$this->Session->setFlash('El email de confirmación ha sido reenviado', 'flash_success');
+
+			//============EndEmail=============//
+		}
+	}
+
+
 	public function activateUserAccount($token = null) {
 
-		if(!$token){
+		if(!$token) {
 
 			throw new NotFoundException('Token Invalido');
 		}
 
 		$this->User->recursive = -1;
 
-		if(!($user = $this->User->findBytokenhash($token))){
+		if(!($user = $this->User->findBytoken_hash($token))) {
 
-			$this->Session->setFlash('Clave corrumpida. La cuenta ya ha sido activada','flash_error');
+			$this->Session->setFlash('Clave corrumpida. La cuenta ya ha sido activada', 'flash_error');
 			return $this->redirect('/');
 		}
 
-		$new_hash = sha1($user['User']['email'].rand(0,100));
+		$newHashToken = sha1($user['User']['email'].rand(0, 100));
 
 		$this->User->id = $user['User']['id'];
 
-		if($this->User->saveField('status', 'Active') && $this->User->saveField('token_hash', $new_hash)){
+		if($this->User->saveField('status', 'Active') && $this->User->saveField('token_hash', $newHashToken)) {
+
+			// If account changes status, we don't need session data anymore.
+			$this->Session->delete('urlForActivation');
+			$this->Session->delete('userEmail');
 
 			$this->Session->setFlash('La cuenta ha sido activada', 'flash_success');
 			return;
 		}
 
-		else{
-			$this->Session->setFlash('No se pudo Activar la cuenta del usuario. Vuelva a intentar.','flash_error');
+		else {
+			$this->Session->setFlash('No se pudo Activar la cuenta del usuario. Vuelva a intentar.', 'flash_error');
 			return $this->redirect(array('controller'=>'users', 'action'=>'login'));
 		}
-
 	}
+
 
 	public function viewUser($id = null) {
 
@@ -196,23 +256,23 @@ class UsersController extends AppController {
 			$this->request->data = $user;
 		}
 
-		if ($this->request->is('put','post')) {
+		if ($this->request->is('put', 'post')) {
 
 			$this->request->data['User']['id'] = $id;
 
-			if (!($this->User->save($this->request->data))) {
+			if (!($this->User->save($this->request->data, true, array('id', 'email', 'first_name', 'last_name', 'date_of_birth', 'cell_number')))) {
 
 				$this->Session->setFlash('Hubo un error y no se pudo modificar el Perfil','flash_error');
 				return;
 			}
 
-			$this->Session->setFlash('Perfil modificado exitosamente','flash_success');
+			$this->Session->setFlash('Perfil modificado exitosamente', 'flash_success');
 			return $this->redirect(array('controller'=>'users', 'action' => 'viewUser', $id));
 		}
 	}
 
 
-	public function editPasswordUser($id = null){
+	public function editUserPassword($id = null) {
 
 		$this->set('title_for_layout', 'Editar Contraseña');
 
@@ -226,73 +286,66 @@ class UsersController extends AppController {
 			$this->request->data = $user;
 		}
 
-		if ($this->request->is('put','post')) {
-
-			// User old password.
-			$storedHash = $user['User']['password'];
+		if ($this->request->is('put', 'post')) {
 
 			$this->User->set($this->request->data);
 
-			// Check validations for password_update and confirm_password_update fields.
+			// Check validations for 'password_update' and 'confirm_password_update' fields.
 			if ($this->User->validates()) {
 
-				// Check if old password in database is equal to old password entered.
-				$newHash = Security::hash($this->request->data['User']['old_password'], 'blowfish', $storedHash);
+				$this->request->data['User']['id'] = $id;
 
-				// old passwords different
-				if(strcmp($storedHash, $newHash) != 0){
+				if (!($this->User->save($this->request->data, true, array('id', 'password')))) {
 
-					$this->Session->setFlash('Su contraseña vieja no es correcta','flash_error');
+					$this->Session->setFlash('Hubo un error y no se pudo editar la contraseña', 'flash_error');
 					return;
 				}
 
-				if (!($this->User->save($this->request->data))){
+				$this->Session->setFlash('Contraseña modificada exitosamente', 'flash_success');
+				return $this->redirect(array('controller'=>'users', 'action'=>'viewUser', $id));
+			}
 
-					$this->Session->setFlash('Hubo un error y no se pudo editar la contraseña','flash_error');
-					return;
-				}
-
-				$this->Session->setFlash('Contraseña modificada','flash_success');
-				return $this->redirect('/');
+			else{
+				$this->Session->setFlash('Corrija los campos incorrectos', 'flash_error');
+				return;
 			}
 		}
 	}
 
-	// quizas no va el PUBLIC, probar ????????????????????????????????????????????????????????????????????????????''
-	public function forgetUserPassword(){
+	
+	public function forgetUserPassword() {
 
 		$this->set('title_for_layout', 'Resetear Pass');
 
 		if ($this->request->is('post')) {
 
-			if(!($this->request->data['User']['email'])){
+			if(!($this->request->data['User']['email'])) {
 
-				$this->Session->setFlash('Ingrese su Email','flash_error');
+				$this->Session->setFlash('Ingrese su Email', 'flash_error');
 				return;
 			}
 
 			$this->User->recursive = -1;
 
-			if(!($user = $this->User->findByemail($this->request->data['User']['email']))){
+			if(!($user = $this->User->findByemail($this->request->data['User']['email']))) {
 
-				$this->Session->setFlash('El email ingresado es inexistente','flash_error');
+				$this->Session->setFlash('El email ingresado es inexistente', 'flash_error');
 				return;
 			}
 
-			$key = Security::hash(String::uuid(),'sha512',true);
-			$hash = sha1($user['User']['email'].rand(0,100));
-			$url = Router::url( array('controller'=>'users','action'=>'resetUserPassword'), true ).'/'.$key.'#'.$hash;
-
-			$ms = $url;
-			$ms = wordwrap($ms,1000);
+			$key = Security::hash(String::uuid(), 'sha512', true);
+			$hash = sha1($user['User']['email'].rand(0, 100));
+			
+			$urlForActivation = Router::url( array('controller'=>'users', 'action'=>'resetUserPassword'), true ).'/'.$key.'#'.$hash;
+			$urlForActivation = wordwrap($urlForActivation, 1000);
 
 			$user['User']['token_hash'] = $key;
 
 			$this->User->id = $user['User']['id'];
 
-			if(!($this->User->saveField('token_hash',$user['User']['token_hash']))){
+			if(!($this->User->saveField('token_hash', $user['User']['token_hash']))) {
 
-				$this->Session->setFlash('Error generando el Link de reseteo. Intente mas tarde.','flash_error');
+				$this->Session->setFlash('Error generando el Link de reseteo. Intente mas tarde.', 'flash_error');
 				return $this->redirect('/');
 			}
 
@@ -305,7 +358,8 @@ class UsersController extends AppController {
 				'username'=>'el.viejo.martin.webmaster@gmail.com',
 				'password'=>'fedora1234',
 				'transport' => 'Smtp'
-				);
+			);
+
 			$this->Email->template = 'reset_user_password_template';
 			$this->Email->from = 'el.viejo.martin.webmaster@gmail.com';
 
@@ -316,53 +370,64 @@ class UsersController extends AppController {
 
 			$this->Email->delivery = 'smtp';
 
-			$this->set('ms', $ms);
+			$this->set(compact('urlForActivation'));
+
 			$this->Email->send();
 
 			$this->set('smtp_errors', $this->Email->smtpError);
+
 			$this->Session->setFlash('Revise su correo para resetear su contraseña', 'flash_success');
-			$this->redirect('/');
+			return $this->redirect('/');
 
 			//============EndEmail=============//
 		}
 	}
 
 
-	public function resetUserPassword($token = null){
+	public function resetUserPassword($token = null) {
 
 		$this->set('title_for_layout', 'Recuperar Pass');
 
 		$this->User->recursive = -1;
 
-		if(!$token){
+		if(!$token) {
 			throw new NotFoundException('Token invalido');
 		}
 
-		if(!($user = $this->User->findBytokenhash($token))){
-			$this->Session->setFlash('Clave corrumpida. Por favor vuelva a resetear su contraseña. El link de reseteo solo funciona una vez','flash_error');
+		if(!($user = $this->User->findBytoken_hash($token))) {
+			$this->Session->setFlash('Clave corrumpida. Por favor vuelva a resetear su contraseña. El link de reseteo solo funciona una vez', 'flash_error');
 			return $this->redirect('/');
 		}
 
-		$this->User->id = $user['User']['id'];
+		if($this->request->is('post')) {
 
-		$this->User->data['User']['email'] = $user['User']['email'];
+			$this->User->id = $user['User']['id'];
+			
+			$this->User->data = $this->request->data;
+			
+			if(!($this->User->validates(array('fieldList'=>array('password', 'password_confirm'))))) {
 
-		$new_hash = sha1($user['User']['email'].rand(0,100)); //created new token
+				unset($this->request->data['User']['password']);
+				unset($this->request->data['User']['password_confirm']);
 
-		$this->User->data['User']['tokenhash'] = $new_hash;
+				$this->Session->setFlash('Corrija los campos incorrectos', 'flash_error');
+				return;
+			}
 
-		if($this->User->validates(array('fieldList'=>array('password','password_confirm')))){
+			$newHashToken = sha1($user['User']['email'].rand(0, 100));
 
-			if($this->User->save($this->User->data))
-			{
-				$this->Session->setFlash('Contraseña actualizada','flash_success');
-				return $this->redirect(array('controller'=>'users','action'=>'login'));
+			$this->User->data['User']['token_hash'] = $newHashToken;
+
+			if($this->User->save($this->User->data, true, array('password', 'token_hash'))) {
+
+				$this->Session->setFlash('Contraseña actualizada exitosamente', 'flash_success');
+				return $this->redirect(array('controller'=>'users', 'action'=>'login'));
 			}
 		}
 	}
 
 
-    public function deleteUser($id = null){
+    public function deleteUser($id = null) {
 
 		if (!($user = $this->User->findById($id))) {
 
@@ -371,23 +436,29 @@ class UsersController extends AppController {
 
 		$this->User->id = $id;
 
-		if ($this->User->delete($id, true)){
+		if ($this->User->delete($id, true)) {
 
 			$this->Session->destroy('User');
 			$this->Session->setFlash('Su cuenta ha sido eliminada', 'flash_success');
 			return $this->redirect('/');
 		}
-		else{
+		else {
 
 			$this->Session->setFlash('No se pudo cambiar el Estado del Usuario. Intente mas tarde.', 'flash_error');
 			return $this->redirect('/');
 		}
     }
 
-    ///////////////////////////   ACTIONS ONLY FOR ADMINISTRATORS /////////////////////////////////////////
+    ///////////////////////////   ACTIONS FOR ADMINISTRATORS ONLY /////////////////////////////////////////
 
     // prefix ADMINISTRATOR
-    public function administrator_changeUserAccoutStatus($id = null){
+    public function administrator_searchUser() {
+
+    	// TODO
+    }
+
+    
+    public function administrator_changeUserAccoutStatus($id = null) {
 
 		if (!($user = $this->User->findById($id))) {
 
@@ -396,20 +467,21 @@ class UsersController extends AppController {
 
 		$this->User->id = $id;
 
-		if ($this->User->saveField('status', 'Inactive')){
+		if ($this->User->saveField('status', 'Inactive')) {
 
+			// TODO: Esto puede estar fallando poruqe no esoty seguro como pasar parametro y mensaje flash personalizado.
+			// ????????????????????????????????????????????????????????????????????????????????????????????????????
 			$this->Session->setFlash('La cuenta del usuario %s ha sido desactivada', h($user['User']['email']), 'flash_success');
-					}
-		else{
+		}
+		else {
 			$this->Session->setFlash('No se pudo cambiar el estado de la cuenta de  $s', h($user['User']['email']), 'flash_error');
-			
 		}
 
 		return $this->redirect('/');
     }
 
 
-    public function administrator_deleteUser($id = null){
+    public function administrator_deleteUser($id = null) {
 
     	if (!($user = $this->User->findById($id))) {
 
@@ -418,14 +490,14 @@ class UsersController extends AppController {
 
 		$this->User->id = $id;
 
-		if (!($this->User->delete($id, true))){
+		if (!($this->User->delete($id, true))) {
 
 			$this->Session->setFlash('No se pudo eliminar el Usuario. Intente mas tarde.', 'flash_error');
 			return $this->redirect('/');
 		}
 
 		// Trying to delete his own administration account.
-		if($id == $this->Session->read('Auth.User.id')){
+		if($id == $this->Session->read('Auth.User.id')) {
 			$this->Session->destroy('User');
 		}
 

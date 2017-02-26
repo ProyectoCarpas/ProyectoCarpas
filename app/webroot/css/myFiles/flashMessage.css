@@ -1,26 +1,30 @@
-.flashMessage{
+.flash-message{
   font-style: bold;
   position: absolute;
-  width: 70%;
+  margin-left: 200px;
+  width: 40%;
+  text-align: center;
+  z-index:9999;
 }
 
+ 
 
 /*////////////////////////////////////// MOBILE //////////////////////////////////////////*/
 
 /* All screen width */
 @media screen and (max-width: 768px){
-  .flashMessage{
+  .flash-message{
     width: 100%;
   }
 }
 
 @media screen and (max-width: 768px){
-  .flashMessage{
+  .flash-message{
     width: 100%;
   }
 }
 
-/*//////////////////////////////////////////////////////////////////////////////////////////////*/
+/*////////////////////////////////////////////    EFFECTS    ///////////////////////////////////////////*/
 
 .animated {
   -webkit-animation-duration: 1s;

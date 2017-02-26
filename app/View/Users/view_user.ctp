@@ -1,68 +1,65 @@
 
-<?php $this->assign('head_description', 'Detalles Usuario - Info Parana. Minorista y Compra Online de Articulos de Informatica - Parana, Entre Rios - Tel: 0343 - 4000000. ');?>
+<?php $this->assign('head_description', 'Detalles Usuario ....');?>
 
-<div class="container well">
+<div class="container">
+    <div class="well">
 
-    <div class="row">
+        <div class="row">
 
-        <div class="col-md-3">
+            <div class="col-md-3">
 
-            <?php echo $this->element('user_actions_menu'); ?>
-        </div>
-
-        <div class="col-md-9 lado_derecho">
-
-            <div class="row titulo">
-
-                <div class="col-xs-12">
-
-                   <h3>Datos Personales</h3>
-
-                </div>
-
+                <?php echo $this->element('user_actions_menu'); ?>
             </div>
 
-            <div class="row datos">
+            <div class="col-md-9 lado_derecho">
 
-                <div class="col-xs-12">
+                <div class="row titulo">
 
-                    <p> <span class="detalles"> Username: </span> <?php echo $user['User']['email']; ?></p>
+                    <div class="col-xs-12">
 
-                    <p> <span class="detalles"> Nombre: </span> <?php echo $user['User']['first_name']; ?></p>
+                       <h3>Datos Personales</h3>
 
-                    <p> <span class="detalles"> Apellido: </span> <?php echo $user['User']['last_name']; ?></p>
-
-                    <p> <span class="detalles"> Email: </span> <?php echo $user['User']['date_of_birth']; ?></p>
-
-                    <p> <span class="detalles"> Número Celular: </span> <?php echo $user['User']['cell_number']; ?></p>
+                    </div>
 
                 </div>
 
-            </div> <!-- Cierra row-->
+                <div class="row datos">
 
-            <!-- ////////////// -->
+                    <div class="col-xs-12">
 
-            <div class="row botones">
+                        <p> <span class="detalles"> Username: </span> <?php echo $user['User']['email']; ?></p>
 
-                <div class="col-xs-12">
+                        <p> <span class="detalles"> Nombre: </span> <?php echo $user['User']['first_name']; ?></p>
 
-                      <?php echo $this->Html->link('<span class="glyphicon glyphicon-circle-arrow-left"></span> Volver', 'javascript:history.go(-1)',
-                                                              array('class'=>'btn btn-primary btn-sm',
-                                                                    'escape' => false));  ?>
+                        <p> <span class="detalles"> Apellido: </span> <?php echo $user['User']['last_name']; ?></p>
 
-                </div> <!--fin Col-md-12 -->
+                        <p> <span class="detalles"> Email: </span> <?php echo $user['User']['date_of_birth']; ?></p>
 
-            </div> <!--fin ROW -->
+                        <p> <span class="detalles"> Número Celular: </span> <?php echo $user['User']['cell_number']; ?></p>
 
-        </div> <!--fin Col-md-9 -->
+                    </div>
+
+                </div> <!-- Cierra row-->
+
+                <!-- ////////////// -->
+
+                <div class="row botones">
+
+                    <div class="col-xs-12">
+
+                          <?php echo $this->Html->link('<span class="glyphicon glyphicon-circle-arrow-left"></span> Volver', 'javascript:history.go(-1)',
+                                                                  array('class'=>'btn btn-primary btn-sm',
+                                                                        'escape' => false));  ?>
+
+                    </div> <!--fin Col-md-12 -->
+
+                </div> <!--fin ROW -->
+
+            </div> <!--fin Col-md-9 -->
 
 
-    </div> <!--fin ROW -->
+        </div> <!--fin ROW -->
 
-    <!-- //////////// -->
-
-
-    
-
-</div><!-- Cierro container -->
+    </div><!-- well-->
+</div><!-- container -->
 

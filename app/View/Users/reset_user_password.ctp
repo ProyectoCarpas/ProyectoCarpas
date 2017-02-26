@@ -1,15 +1,6 @@
 
-<?php echo $this->Html->script('validation_client_side', array('inline' => false)); ?>
 
-<!-- Le cambie el nombre para no confundir con el "bootstrap.js" -->
-<?php echo $this->Html->script('bootstrap_validation_client_side', array('inline' => false)); ?>
-
-<?php echo $this->Html->css('validation_client_side', array('inline' => false)); ?>
-
-<?php $this->Html->css('styles/styles_USERS_reset', array('inline' => false)); ?>
-
-
-<?php $this->assign('head_description', 'Recuperar Pass - Info Parana. Minorista y Compra Online de Articulos de Informatica - Parana, Entre Rios - Tel: 0343 - 4000000. ');?>
+<?php $this->assign('head_description', 'Recuperar Pass');?>
 
 
 <div class="container well">
@@ -107,64 +98,64 @@
 
 <script type='text/javascript' language='javascript'>
 
-$(document).ready(function() {
+// $(document).ready(function() {
 
-    /*ID formulario*/
-    $('#reset').formValidation({
-        framework: 'bootstrap',
+//     /*ID formulario*/
+//     $('#reset').formValidation({
+//         framework: 'bootstrap',
 
-        /*Para que utilice los iconos de bootstrap*/
-        icon: {
-            valid: 'glyphicon glyphicon-ok',
-            invalid: 'glyphicon glyphicon-remove',
-            validating: 'glyphicon glyphicon-refresh'
-        },
-
-
-        fields: {
-
-              'data[User][password]': {
-                validators: {
-                    notEmpty: {
-                        message: 'El campo no puede ser vacio'
-                    },
-                    stringLength: {
-                        min:6,
-                        max: 30,
-                        message: 'Debe tener al menos 6 caracteres y menos de 30 caracteres'
-                    },
+//         /*Para que utilice los iconos de bootstrap*/
+//         icon: {
+//             valid: 'glyphicon glyphicon-ok',
+//             invalid: 'glyphicon glyphicon-remove',
+//             validating: 'glyphicon glyphicon-refresh'
+//         },
 
 
-                    regexp: {
-                        regexp: /(^(?=.*[a-z])(?=.*[A-Z])(?=.*\d){6,20}.+$)/,
-                        message: 'De tener al menos una mayuscula, una minuscula y un numero'
-                    },
+//         fields: {
+
+//               'data[User][password]': {
+//                 validators: {
+//                     notEmpty: {
+//                         message: 'El campo no puede ser vacio'
+//                     },
+//                     stringLength: {
+//                         min:6,
+//                         max: 30,
+//                         message: 'Debe tener al menos 6 caracteres y menos de 30 caracteres'
+//                     },
 
 
-                    different: {
-                        field: 'data[User][username]',
-                        message: 'El password no puede ser igual al Nombre de usuario'
-                    }
-                }
-            },
+//                     regexp: {
+//                         regexp: /(^(?=.*[a-z])(?=.*[A-Z])(?=.*\d){6,20}.+$)/,
+//                         message: 'De tener al menos una mayuscula, una minuscula y un numero'
+//                     },
 
 
-            'data[User][password_confirm]': {
-                validators: {
-                    notEmpty: {
-                        message: 'El campo no puede ser vacio'
-                    },
+//                     different: {
+//                         field: 'data[User][username]',
+//                         message: 'El password no puede ser igual al Nombre de usuario'
+//                     }
+//                 }
+//             },
 
-                     identical: {
-                        field: 'data[User][password]',
-                        message: 'Las contraseñas no coinciden'
-                    }
-                }
-            }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//             'data[User][password_confirm]': {
+//                 validators: {
+//                     notEmpty: {
+//                         message: 'El campo no puede ser vacio'
+//                     },
 
-        }
-    });
-});
+//                      identical: {
+//                         field: 'data[User][password]',
+//                         message: 'Las contraseñas no coinciden'
+//                     }
+//                 }
+//             }
+
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//         }
+//     });
+// });
 </script>

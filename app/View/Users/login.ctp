@@ -15,6 +15,16 @@
 
 ?>
 
+<br /><br />
+
+<div class="col-xs-12">
+
+	<?php echo $this->Html->link("¿No puedes acceder a tu cuenta?", array('controller' => 'users', 'action' => 'forgetUserPassword'));?>
+
+</div>
+
+<br /><br />
+
 <h2> Nuevo usuario </h2>
 <?php echo $this->Html->link('ADD', array('controller' => 'users', 'action' => 'addUser'));  ?>
 

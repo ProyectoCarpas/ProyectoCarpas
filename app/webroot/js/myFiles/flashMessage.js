@@ -6,14 +6,14 @@
 
 }(function($, window, document) {
 
-        var flashMessage = $(".flashMessage");
+        var flashMessage = $(".flash-message");
 
         // The $ is now locally scoped
         $(document).ready(function(){
 
             // Hide message after 8 seconds and delay 1.5 second to aplying fadeOut.
             setTimeout(function() {
-                                $(".flashBox").fadeOut(1500);
+                                $(".flash-box").fadeOut(1500);
                             }, 8000);
 
             flashMessage.addClass('animated fadeInDown');

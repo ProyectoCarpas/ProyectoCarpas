@@ -34,5 +34,22 @@ class AppController extends Controller {
 			'authorize' => array('Controller')
         )
 	);
+
+	
+	public function checkRequiredFieldsForm($data = null, $requiredFields) {
+
+		if (!empty($requiredFields)) {
+
+			foreach ($requiredFields as $field) {
+
+					if(!in_array($field, array_keys($data))){
+
+						return false;
+					}
+			}
+		}
+
+		return true;
+	}
 }
 

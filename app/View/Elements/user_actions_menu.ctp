@@ -26,7 +26,7 @@
       <?php echo $this->Html->link('<span class="glyphicon glyphicon-alert"></span> Editar Contraseña',
 
                                                       array('controller' => 'users',
-                                                            'action' => 'editPasswordUser',
+                                                            'action' => 'editUserPassword',
                                                             $this->Session->read('Auth.User.id')),
 
                                                       array('id' => 'edit-user-pass-option',

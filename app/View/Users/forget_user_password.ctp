@@ -1,25 +1,14 @@
 
-<?php echo $this->Html->script('validation_client_side', array('inline' => false)); ?>
-
-<!-- Le cambie el nombre para no confundir con el "bootstrap.js" -->
-<?php echo $this->Html->script('bootstrap_validation_client_side', array('inline' => false)); ?>
-
-<?php echo $this->Html->css('validation_client_side', array('inline' => false)); ?>
-
-
-<?php echo $this->Html->css('styles/styles_USERS_forgetpwd', array('inline' => false)); ?>
-
-<?php $this->assign('head_description', 'Resetear Pass - Info Parana. Minorista y Compra Online de Articulos de Informatica - Parana, Entre Rios - Tel: 0343 - 4000000. ');?>
+<?php $this->assign('head_description', 'Resetear Pass -');?>
 
 
 <div class="container well">
 
-
-    <div class="row titulo">
+    <div class="row">
 
         <div class="col-lg-6 col-md-6 col-sm-5">
 
-                  <h4>Resetear Contraseña</h4>
+              <h4>Resetear Contraseña</h4>
         </div>
 
     </div> <!-- CIERRA ROW -->
@@ -98,41 +87,41 @@
  <script type='text/javascript' language='javascript'>
 
 
-$(document).ready(function() {
+// $(document).ready(function() {
 
-    /*ID formulario*/
-    $('#reset_password').formValidation({
-        framework: 'bootstrap',
+//     /*ID formulario*/
+//     $('#reset_password').formValidation({
+//         framework: 'bootstrap',
 
-        /*Para que utilice los iconos de bootstrap*/
-        icon: {
-            valid: 'glyphicon glyphicon-ok',
-            invalid: 'glyphicon glyphicon-remove',
-            validating: 'glyphicon glyphicon-refresh'
-        },
+//         /*Para que utilice los iconos de bootstrap*/
+//         icon: {
+//             valid: 'glyphicon glyphicon-ok',
+//             invalid: 'glyphicon glyphicon-remove',
+//             validating: 'glyphicon glyphicon-refresh'
+//         },
 
 
-        fields: {
+//         fields: {
 
-                  'data[User][email]': {
-                            validators: {
-                                notEmpty: {
-                                    message: 'El campo no puede ser vacio'
-                                },
-                                emailAddress: {
-                                    message: 'Debe proporcionar una direccion Email valida'
-                                },
-                                stringLength: {
-                                    min:6,
-                                    max: 50,
-                                    message: 'Debe tener al menos 6 caracteres y menos de 50 caracteres'
-                                },
-                            }
-                        }
+//                   'data[User][email]': {
+//                             validators: {
+//                                 notEmpty: {
+//                                     message: 'El campo no puede ser vacio'
+//                                 },
+//                                 emailAddress: {
+//                                     message: 'Debe proporcionar una direccion Email valida'
+//                                 },
+//                                 stringLength: {
+//                                     min:6,
+//                                     max: 50,
+//                                     message: 'Debe tener al menos 6 caracteres y menos de 50 caracteres'
+//                                 },
+//                             }
+//                         }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        }
-    });
-});
+//         }
+//     });
+// });
 </script>

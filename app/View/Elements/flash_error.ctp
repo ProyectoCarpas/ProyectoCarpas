@@ -1,6 +1,6 @@
 <div class="container">
-	<div class="flashBox">
-	    <div class="alert alert-danger alert-hover flashMessage">
+	<div class="flash-box">
+	    <div class="alert alert-danger alert-hover flash-message">
 	        
         	<button class="close">x</button>
         	<i class="fa fa-exclamation-circle"></i> <strong> <?php echo $message; ?> </strong>
