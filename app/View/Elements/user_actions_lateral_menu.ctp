@@ -1,5 +1,4 @@
-
-<div id="userActionsMenu" class="list-group" data-actual-view="<?php echo $this->action; ?>">
+<div id="userActionsLateralMenu" class="list-group" data-actual-view="<?php echo $this->action; ?>">
    
       <div> Operaciones Usuario </div>
 

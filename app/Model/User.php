@@ -6,6 +6,15 @@ class User extends AppModel {
 
 	public $name = 'User';
 
+	protected $enum = array(
+
+		'status' => array(
+
+			'Activo' => 'Activo',
+			'Inactivo' => 'Inactivo'
+		)
+	);
+
 	public $belongsTo = array(
 		'Role' => array(
 			'className' => 'Role',

@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-	var actualView = $("#userActionsMenu").attr("data-actual-view");
+	var actualView = $("#userActionsLateralMenu").attr("data-actual-view");
 
 	switch(actualView){
 		
@@ -12,7 +12,7 @@ $(document).ready(function () {
         	$("#edit-user-option").addClass("active");
         break;
 
-        case "editPasswordUser":
+        case "editUserPassword":
         	$("#edit-user-pass-option").addClass("active");
         break;
 	}

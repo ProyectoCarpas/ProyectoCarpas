@@ -5,7 +5,7 @@
 
 <?php }?>
 
-<?php if($this->Html->isAdminUser()){  ?>
+<?php if($this->Html->isAdministratorUser()){  ?>
 
   <h2> Admin User </h2>
 <?php }?>

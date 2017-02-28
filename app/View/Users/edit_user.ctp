@@ -16,7 +16,7 @@
 
         <div class="col-md-3">
 
-            <?php echo $this->element('user_actions_menu'); ?>
+            <?php echo $this->element('user_actions_lateral_menu'); ?>
         </div>
 
         <div class="col-md-9 lado_derecho">

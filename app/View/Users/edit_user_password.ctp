@@ -4,7 +4,7 @@
 
     <div class="col-md-3">
 
-            <?php echo $this->element('user_actions_menu'); ?>
+            <?php echo $this->element('user_actions_lateral_menu'); ?>
     </div>
 
        <!-- Le dedico toda la fila al titulo -->

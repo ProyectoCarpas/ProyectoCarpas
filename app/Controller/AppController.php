@@ -20,7 +20,7 @@ class AppController extends Controller {
                                     'fields' => array('username' => 'email',
                                                       'password' => 'password'),
                                     'scope' => array(
-                                                     array('User.status' => 'Active')
+                                                     array('User.status' => 'Activo')
                                     )
 							)
 			),
