@@ -561,33 +561,27 @@ class UsersController extends AppController {
 			// completamos ESTE input, por lo tanto tampoco debemos poner algo en el input para este caso.
 
 
-			// if(isset($condition1) && $condition1 != "true"){
-			// 	 $condition1_aux = substr(reset($condition1), 1, -1);
-			// 	 $this->request->data['Usuario']['username'] = $condition1_aux;
-			// }
+			if(isset($conditionEmail) && $conditionEmail != "true"){
+				 $this->request->data['User']['email'] = substr(reset($conditionEmail), 1, -1);
+			}
 
-			// if(isset($condition2) && $condition2 != "true"){
-			// 	 $condition2_aux = substr(reset($condition2), 1, -1);
-			// 	 $this->request->data['Usuario']['nombre'] = $condition2_aux;
-			// }
+			if(isset($conditionFullName) && $conditionFullName != "true"){
+				 $this->request->data['User']['full_name'] = substr($conditionFullName['OR']['User.first_name LIKE'], 1, -1);
+			}
 
-			// if(isset($condition3) && $condition3 != "true"){
-			// 	 $condition3_aux = substr(reset($condition3), 1, -1);
-			// 	 $this->request->data['Usuario']['apellido'] = $condition3_aux;
-			// }
+			if(isset($conditionStatues) && $conditionStatues != "true"){
+				 $this->request->data['User']['statues'] = $conditionStatues;
+			}
 
-			// if(isset($condition4) && $condition4 != "true"){
-			// 	 $condition4_aux = substr(reset($condition4), 1, -1);
-			// 	 $this->request->data['Usuario']['emaill'] = $condition4_aux;
-			// }
-
-
+			if(isset($conditionRoleId) && $conditionRoleId != "true"){
+				 $this->request->data['User']['role_id'] = $conditionRoleId;
+			}
 		}
 
-		debug($conditionEmail);
-		debug($conditionFullName);
-		debug($conditionStatues);
-		debug($conditionRoleId);
+		// debug($conditionEmail);
+		// debug($conditionFullName);
+		// debug($conditionStatues);
+		// debug($conditionRoleId);
 
 		$this->paginate = array(
 								'limit' => 3,
