@@ -76,7 +76,7 @@ class UsersController extends AppController {
 		return $this->redirect($this->Auth->logout());
 	}
 
-
+	//TODO: falla el add cundo salta una validacion del server, corrijo y vuevlo a apretar submit. Vuelve a abrir ADD
 	public function addUser() {
 
 		$this->set('title_for_layout', 'Nuevo Usuario');
@@ -454,51 +454,45 @@ class UsersController extends AppController {
 		}
     }
 
-    ///////////////////////////   ACTIONS FOR ADMINISTRATORS ONLY /////////////////////////////////////////
+    /////////////////////////// ACTIONS FOR ADMINISTRATORS ONLY /////////////////////////////////////////
 
     // prefix ADMINISTRATOR
 
-    // Si el valor inicial es "0" significa que ingresamos por primera vez desde "Operaciones Administrador-> Buscar Usuarios"
-	// El valor inicial llega como "1" cuando hacemos un cambio de pagina o hacemos SORT de alguna columna.
-    public function administrator_searchUsers($valor_inicial = null) {
+    // value = 0 when entering to searchUser for first time.
+    // value = 1 when sorting column or paging user grid.
+    public function administrator_searchUsers($value = null) {
 
     	$this->set('title_for_layout', 'Buscar Usuarios');
 
+    	// set dropdowns
 		$this->set('roles', $this->User->Role->find('list', array('fields' => array('id', 'name'))));
-
 		$this->set('statues', $this->User->enum['status']);
 
-
-		// Borramos los arreglos de session cuando ingresamos por primera vez y los creamos.
-		if($valor_inicial == 0){
+		// Clean SESSION DATA and User grid.
+		if($value == 0) {
 
 			$this->Session->delete('conditionEmail');
-			$this->Session->write('conditionEmail');
-
 			$this->Session->delete('conditionFullName');
-			$this->Session->write('conditionFullName');
-
 			$this->Session->delete('conditionStatues');
-			$this->Session->write('conditionStatues');
-
 			$this->Session->delete('conditionRoleId');
-			$this->Session->write('conditionRoleId');
 
 			$hasSearch = false;
 
 			$this->set(compact('hasSearch'));
 
+			// avoid users query.
 			return;
 		}
 
-		if($this->request->is('post')){
+		// Post request
+		if($this->request->is('post')) {
 
 			if ($this->request->data['User']['email'] != "") {
 
                     $conditionEmail = array('User.email LIKE' => "%" . $this->request->data['User']['email'] . "%");
                     $this->Session->write('conditionEmail', $conditionEmail);
             }
-            else{
+            else {
             	 $this->Session->write('conditionEmail', "true");
             }
 
@@ -507,10 +501,10 @@ class UsersController extends AppController {
                     $conditionFullName = array("OR" => array('User.first_name LIKE' => "%" . $this->request->data['User']['full_name'] . "%",
                     					         	         'User.last_name LIKE' =>  "%" . $this->request->data['User']['full_name'] . "%"
                     					         	         )
-                    					       );
+					);
                     $this->Session->write('conditionFullName', $conditionFullName);
             }
-            else{
+            else {
             	 $this->Session->write('conditionFullName', "true");
             }
 
@@ -519,7 +513,7 @@ class UsersController extends AppController {
                     $conditionStatues = array('User.status' => $this->request->data['User']['statues']);
                     $this->Session->write('conditionStatues', $conditionStatues);
             }
-            else{
+            else {
             	 $this->Session->write('conditionStatues', "true");
             }
 
@@ -528,69 +522,63 @@ class UsersController extends AppController {
                     $conditionRoleId = array('User.role_id' => $this->request->data['User']['role_id']);
                     $this->Session->write('conditionRoleId', $conditionRoleId);
             }
-            else{
-            	 $this->Session->write('conditionRolId', "true");
+            else {
+            	 $this->Session->write('conditionRoleId', "true");
             }
 		}
 
+		// Filters are used to fill inputs when is not a POST request.
 		$conditionEmail    = $this->Session->read('conditionEmail');
 		$conditionFullName = $this->Session->read('conditionFullName');
 		$conditionStatues  = $this->Session->read('conditionStatues');
-		$conditionRoleId    = $this->Session->read('conditionRoleId');
+		$conditionRoleId   = $this->Session->read('conditionRoleId');
 
-		$hasSearch = true;
-
-		$this->set(compact('hasSearch'));
-
-
-		// Si hemos hecoh un SORT de nombres por ejemplo, debemos rellenar los inputs con lo que hay almacenado en
-		// sus correspondientes variables de session
+		// Not POST request.
+		// load filters in inputs when is not a POST request.
 		if (!$this->request->data) {
 
-			// Sabemos que el array de session "condition1" posee solo un elemento: por ejemplo:
-			// array(
-					// 'User.username LIKE' => '%fed%'
-			// )
-			// Si es que hemos completado el campo de "username". Por lo tanto en la tabla al ordenar por username,
-			// nombre, apellido o email, necesitamos seguir manteniendo lo que escribimos en "username", es decir "fed".
-			// Para eso utlizamos lo siguiente: reset lo que hace es obtener el VALUE del primer elemento del arreglo
-			// que pasamos. Siempre tendra un solo elemento el arreglo por lo tanto devuelve "%fed%". Luego con "substr"
-			// le decimos que quite el primer caracter y el ultimo caracter al string pasado. De estamo forma "condition1_aux"
-			// tendra "fed" lo cual lo ponemos en el input de "username."
-			// Inicialemente es NULL por lo tanto no debemos ejecutar esto. Se transforma en "true" cuando no
-			// completamos ESTE input, por lo tanto tampoco debemos poner algo en el input para este caso.
-
-
-			if(isset($conditionEmail) && $conditionEmail != "true"){
+			if(isset($conditionEmail) && $conditionEmail != "true") {
 				 $this->request->data['User']['email'] = substr(reset($conditionEmail), 1, -1);
 			}
 
-			if(isset($conditionFullName) && $conditionFullName != "true"){
+			if(isset($conditionFullName) && $conditionFullName != "true") {
 				 $this->request->data['User']['full_name'] = substr($conditionFullName['OR']['User.first_name LIKE'], 1, -1);
 			}
 
-			if(isset($conditionStatues) && $conditionStatues != "true"){
+			if(isset($conditionStatues) && $conditionStatues != "true") {
 				 $this->request->data['User']['statues'] = $conditionStatues;
 			}
 
-			if(isset($conditionRoleId) && $conditionRoleId != "true"){
+			if(isset($conditionRoleId) && $conditionRoleId != "true") {
 				 $this->request->data['User']['role_id'] = $conditionRoleId;
 			}
 		}
 
-		// debug($conditionEmail);
-		// debug($conditionFullName);
-		// debug($conditionStatues);
-		// debug($conditionRoleId);
-
+		// query needed for any case: POST request (searching users) and when is not POST (persist users grid
+		// when sort column or paging).
 		$this->paginate = array(
 								'limit' => 3,
 								'conditions' => array($conditionEmail, $conditionFullName, $conditionStatues, $conditionRoleId)
-					 			);
+		);
 
         $users = $this->paginate();
 
-        $this->set(compact('users'));
+        $hasSearch = true;
+
+        $this->set(compact('users', 'hasSearch'));
+	}
+
+
+	public function administrator_viewUser($id = null) {
+
+		$this->set('title_for_layout', 'Detalles Usuario');
+
+		if (!($user = $this->User->findById($id))) {
+
+			throw new NotFoundException('Usuario inexistente');
+		}
+
+		$this->set(compact('user'));
 	}
 
 
@@ -601,17 +589,36 @@ class UsersController extends AppController {
 			throw new NotFoundException('Usuario inexistente');
 		}
 
+		if($user['User']['status'] != 'Activo' && $user['User']['status'] != 'Inactivo') {
+			
+			throw new NotFoundException('Estado del Usuario nulo o desconocido');
+		}
+
 		$this->User->id = $id;
 
-		if ($this->User->saveField('status', 'Inactivo')) {
+		if ($user['User']['status'] == 'Activo') {
 
-			$this->Session->setFlash(__('La cuenta del usuario %s ha sido desactivada', h($user['User']['email'])), 'flash_success');
-			return $this->redirect('/');
+			if ($this->User->saveField('status', 'Inactivo')) {
+
+				$this->Session->setFlash(__('La cuenta del usuario %s ha sido desactivada', h($user['User']['email'])), 'flash_success');
+			}
+			else {
+				$this->Session->setFlash(__('No se pudo desactivar la cuenta del usuario $s', h($user['User']['email'])), 'flash_error');
+			}
 		}
-		else {
-			$this->Session->setFlash(__('No se pudo cambiar el estado de la cuenta de $s', h($user['User']['email'])), 'flash_error');
-			return;
+
+		if ($user['User']['status'] == 'Inactivo') {
+
+			if ($this->User->saveField('status', 'Activo')) {
+
+				$this->Session->setFlash(__('La cuenta del usuario %s ha sido activada', h($user['User']['email'])), 'flash_success');
+			}
+			else {
+				$this->Session->setFlash(__('No se pudo activar la cuenta del usuario $s', h($user['User']['email'])), 'flash_error');
+			}
 		}
+
+		return $this->redirect(array('administrador' => true, 'controller'=>'users', 'action' => 'searchUsers', 1));
     }
 
 
@@ -624,19 +631,15 @@ class UsersController extends AppController {
 
 		$this->User->id = $id;
 
-		if (!($this->User->delete($id, true))) {
+		if ($this->User->delete($id, true)) {
 
-			$this->Session->setFlash('No se pudo eliminar el Usuario. Intente mas tarde.', 'flash_error');
-			return $this->redirect('/');
+			$this->Session->setFlash(__('La cuenta del usuario %s ha sido eliminada', h($user['User']['email'])), 'flash_success');
+		}
+		else {
+			$this->Session->setFlash(__('No se pudo eliminar el usuario %s', h($user['User']['email'])), 'flash_error');
 		}
 
-		// Trying to delete his own administration account.
-		if($id == $this->Session->read('Auth.User.id')) {
-			$this->Session->destroy('User');
-		}
-
-		$this->Session->setFlash('La cuenta de usuario ha sido eliminada', 'flash_success');
-		return $this->redirect('/');
+		return $this->redirect(array('administrador' => true, 'controller'=>'users', 'action' => 'searchUsers', 1));
     }
 }
 ?>

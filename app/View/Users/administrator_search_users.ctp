@@ -102,7 +102,6 @@
 							<thead>
 								<tr>
 
-									<!-- Cmabiamos la URL generada automaticamente ya que sabemos que en la primer instancia se llama como valor inicial a "0" que borra y vuelve a crear las variables de session. Por lo tanto al cambiar de pagina o al ordenar (Sort) por algun atributo, este SORT se llama manteniendo la misma URL con la que se llego a esta instancia. Por lo tanto, con esto le estamos cambiando manualmente el "valor_inicial" a "1" para que nunca sea "0" y borre todos los filtros que hay hasta el momento al hacer SORT. -->
 									<?php $this->Paginator->options['url'] = array('administrator' => true, 'controller' => 'users', 'action' => 'searchUsers', 1);?>
 
 									<th><?php echo $this->Paginator->sort(
@@ -178,7 +177,84 @@
 
 										<td>
 
-										</td>
+											<!-- SI NO es el EL mismo, entonces muestro los botones -->
+											<?php
+											if($user['User']['id'] != $this->Session->read('Auth.User.id')) {?>
+
+												<?php echo $this->Html->link('<i class="glyphicon glyphicon-zoom-in"></i>',
+																				array('administrator' => true,
+																					  'controller' => 'users',
+																					  'action' => 'viewUser',
+																					   $user['User']['id']),
+
+																				array('class' => 'btn btn-xs btn-info',
+																					  'escape' => false,
+																					  'data-toggle' => 'tooltip',
+																			  		  'data-placement' => 'bottom',
+																					  'title' => 'Ver Detalles Usuario',
+																				)
+												);
+
+												echo " | ";
+
+												//Si esta ACTIVO, entonces muestro un determinad boton //////
+												if($user['User']['status'] == 'Activo'){
+
+													echo $this->Html->link('<i class="glyphicon glyphicon-ban-circle"></i>',
+																				array('administrator' => true,
+																					  'controller' => 'users',
+																				  	  'action' => 'changeUserAccoutStatus',
+																				       $user['User']['id']),
+
+																				array('class' => 'btn btn-xs btn-danger',
+								                                                      'escape' => false,
+								                                                      'data-toggle' => 'tooltip',
+																				      'data-placement' => 'bottom',
+																					  'title' => 'Inactivar Usuario',
+								                                                ),
+																			 	sprintf('Esta seguro que desea inactivar a este Usuario?')
+  												    );
+												}
+
+												///Si esta INACTIVO, entonces muestro otro boton  /////////////////// -->
+
+												if($user['User']['status'] == 'Inactivo'){
+
+													echo $this->Html->link('<i class="glyphicon glyphicon-plus"></i>',
+																				array('administrator' => true,
+																					  'controller' => 'users',
+																				  	  'action' => 'changeUserAccoutStatus',
+																				      $user['User']['id']),
+
+																				array('class' => 'btn btn-xs btn-default',
+										                                              'escape' => false,
+					                                                                  'data-toggle' => 'tooltip',
+																		  		      'data-placement' => 'bottom',
+																					  'title' => 'Activar Usuario',
+										                                        ),
+																				sprintf('Esta seguro que desea activar a este Usuario?')
+													);
+												}
+
+												echo " | ";
+
+												echo $this->Html->link('<i class="glyphicon glyphicon-remove"></i>',
+																			array('administrator' => true,
+																				  'controller' => 'users',
+																			  	  'action' => 'deleteUser',
+																			      $user['User']['id']),
+
+																			array('class' => 'btn btn-xs btn-default',
+									                                              'escape' => false,
+				                                                                  'data-toggle' => 'tooltip',
+																	  		      'data-placement' => 'bottom',
+																				  'title' => 'Borrar usuario',
+									                                        ),
+									                                        sprintf('Esta seguro que desea borrar el Usuario?')
+												);
+									  		} ?>  <!-- Cierra IF -->
+
+											</td>
 									</tr>
 
 								<?php endforeach; ?>
