@@ -93,7 +93,7 @@
 
                       <?php echo $this->Html->link('<span class="glyphicon glyphicon-circle-arrow-left"></span> Volver',
 
-                                                array('controller' => 'users', 'action' => 'view',
+                                                array('controller' => 'users', 'action' => 'viewUser',
                                                       $this->Session->read('Auth.User.id')),
 
                                                 array('class' => 'btn btn-primary btn-sm',

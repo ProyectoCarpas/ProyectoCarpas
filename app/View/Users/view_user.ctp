@@ -41,19 +41,7 @@
 
                 </div> <!-- Cierra row-->
 
-                <!-- ////////////// -->
-
-                <div class="row botones">
-
-                    <div class="col-xs-12">
-
-                          <?php echo $this->Html->link('<span class="glyphicon glyphicon-circle-arrow-left"></span> Volver', 'javascript:history.go(-1)',
-                                                                  array('class'=>'btn btn-primary btn-sm',
-                                                                        'escape' => false));  ?>
-
-                    </div> <!--fin Col-md-12 -->
-
-                </div> <!--fin ROW -->
+                
 
             </div> <!--fin Col-md-9 -->
 

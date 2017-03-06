@@ -11,11 +11,10 @@ class UsersController extends AppController {
 
 	public function isAuthorized($user) {
 
-		if( $this->Session->check('Auth.User') AND $this->Session->read('Auth.User.role_id') == Configure::read('General')) {
+		if($this->Session->check('Auth.User')){
 
 			if(in_array($this->action, array('viewUser', 'editUser', 'editUserPassword', 'deleteUser'))) {
 
-				// If user entered his own ID.
 				if(isset($this->request->params['pass'][0])) {
 
 					if($user['id'] == $this->request->params['pass'][0]) {
@@ -76,7 +75,7 @@ class UsersController extends AppController {
 		return $this->redirect($this->Auth->logout());
 	}
 
-	//TODO: falla el add cundo salta una validacion del server, corrijo y vuevlo a apretar submit. Vuelve a abrir ADD
+
 	public function addUser() {
 
 		$this->set('title_for_layout', 'Nuevo Usuario');
@@ -88,6 +87,14 @@ class UsersController extends AppController {
 			if(!$this->checkRequiredFieldsForm($this->request->data['User'], array('email', 'first_name', 'last_name', 'date_of_birth', 'cell_number', 'password', 'password_confirm'))) {
 
 				throw new BadRequestException('Formulario Inválido');
+			}
+
+			$this->User->set($this->request->data);
+
+			if (!$this->User->validates()) {
+
+				$this->Session->setFlash('Corrija los campos son incorrectos', 'flash_error');
+				return;
 			}
 
 			$key = Security::hash(String::uuid(), 'sha512', true);
@@ -105,13 +112,14 @@ class UsersController extends AppController {
 
 			$this->request->data['User']['id'] = String::uuid();
 
-			if(!($this->User->save($this->request->data, true, array('id', 'email', 'first_name', 'last_name', 'date_of_birth', 'cell_number', 'status', 'password', 'token_hash', 'role_id')))) {
+			if (!($this->User->save($this->request->data, false, array('id', 'email', 'first_name', 'last_name', 'date_of_birth', 'cell_number', 'status', 'password', 'token_hash', 'role_id')))) {
 
-				$this->Session->setFlash('Hubo un error. No se pudo crear el Usuario', 'flash_error');
+				$this->Session->setFlash('Se ha producido algun error. Intente nuevamente.', 'flash_error');
 				return;
 			}
 
             //============Email================//
+
 			// SMTP Options. Configuration Email component.
 			$this->Email->smtpOptions = array(
 				'host' => 'ssl://smtp.gmail.com',
@@ -137,6 +145,8 @@ class UsersController extends AppController {
 
 			$this->Email->send();
 
+			//============EndEmail=============//
+
 			$this->Session->setFlash('Revise su correo para activar la cuenta', 'flash_success');
 
 			// Save data in Session.
@@ -144,19 +154,17 @@ class UsersController extends AppController {
 			$this->Session->write('urlForActivation', $urlForActivation);
 
 			return $this->redirect(array('controller'=>'users', 'action'=>'confirmationAndResendUserEmailActivation'));
-
-			//============EndEmail=============//
 		}
 	}
 
 
 	public function confirmationAndResendUserEmailActivation($reSend = null) {
 
-		// Read variables Session
+		// Read Session Data Variables
 		$urlForActivation = $this->Session->read('urlForActivation');
 		$userEmail = $this->Session->read('userEmail');
 
-		// If they session data was deleted, it means the account has been already activated.
+		// If Session Data Variables don't exist, it means the account has been already activated.
 		if(!$urlForActivation && !$userEmail) {
 
 			$this->Session->setFlash('Su cuenta ya ha sido activada', 'flash_success');
@@ -166,6 +174,7 @@ class UsersController extends AppController {
 		if($reSend == 1) {
 
             //============Email================//
+
 			// SMTP Options. Configuration Email component.
 			$this->Email->smtpOptions = array(
 				'host' => 'ssl://smtp.gmail.com',
@@ -296,24 +305,22 @@ class UsersController extends AppController {
 			$this->User->set($this->request->data);
 
 			// Check validations for 'password_update' and 'confirm_password_update' fields.
-			if ($this->User->validates()) {
+			if (!($this->User->validates())) {
 
-				$this->request->data['User']['id'] = $id;
-
-				if (!($this->User->save($this->request->data, true, array('id', 'password')))) {
-
-					$this->Session->setFlash('Hubo un error y no se pudo editar la contraseña', 'flash_error');
-					return;
-				}
-
-				$this->Session->setFlash('Contraseña modificada exitosamente', 'flash_success');
-				return $this->redirect(array('controller'=>'users', 'action'=>'viewUser', $id));
-			}
-
-			else{
-				$this->Session->setFlash('Corrija los campos incorrectos', 'flash_error');
+				$this->Session->setFlash('Corrija los campos son incorrectos', 'flash_error');
 				return;
 			}
+
+			$this->request->data['User']['id'] = $id;
+
+			if (!($this->User->save($this->request->data, false, array('id', 'password')))) {
+
+				$this->Session->setFlash('Hubo un error y no se pudo editar la contraseña', 'flash_error');
+				return;
+			}
+
+			$this->Session->setFlash('Contraseña modificada exitosamente', 'flash_success');
+			return $this->redirect(array('controller'=>'users', 'action'=>'viewUser', $id));
 		}
 	}
 
@@ -355,6 +362,7 @@ class UsersController extends AppController {
 			}
 
 		 	//============Email================//
+
 			/* SMTP Options */
 			$this->Email->smtpOptions = array(
 				'host' => 'ssl://smtp.gmail.com',
@@ -381,10 +389,10 @@ class UsersController extends AppController {
 
 			$this->set('smtp_errors', $this->Email->smtpError);
 
+			//============EndEmail=============//
+
 			$this->Session->setFlash('Revise su correo para resetear su contraseña', 'flash_success');
 			return $this->redirect('/');
-
-			//============EndEmail=============//
 		}
 	}
 
@@ -400,6 +408,7 @@ class UsersController extends AppController {
 		}
 
 		if(!($user = $this->User->findBytoken_hash($token))) {
+			
 			$this->Session->setFlash('Clave corrumpida. Por favor vuelva a resetear su contraseña. El link de reseteo solo funciona una vez', 'flash_error');
 			return $this->redirect('/');
 		}
@@ -423,7 +432,7 @@ class UsersController extends AppController {
 
 			$this->User->data['User']['token_hash'] = $newHashToken;
 
-			if($this->User->save($this->User->data, true, array('password', 'token_hash'))) {
+			if($this->User->save($this->User->data, false, array('password', 'token_hash'))) {
 
 				$this->Session->setFlash('Contraseña actualizada exitosamente', 'flash_success');
 				return $this->redirect(array('controller'=>'users', 'action'=>'login'));
@@ -454,7 +463,7 @@ class UsersController extends AppController {
 		}
     }
 
-    /////////////////////////// ACTIONS FOR ADMINISTRATORS ONLY /////////////////////////////////////////
+    //=================== ACTIONS FOR ADMINISTRATORS ONLY ==========================//
 
     // prefix ADMINISTRATOR
 
@@ -569,20 +578,37 @@ class UsersController extends AppController {
 	}
 
 
-	public function administrator_viewUser($id = null) {
+	public function administrator_editOtherUser($id = null) {
 
-		$this->set('title_for_layout', 'Detalles Usuario');
+		$this->set('title_for_layout', 'Editar Usuario');
 
 		if (!($user = $this->User->findById($id))) {
 
 			throw new NotFoundException('Usuario inexistente');
 		}
 
-		$this->set(compact('user'));
+		if (!$this->request->data) {
+
+			$this->request->data = $user;
+		}
+
+		if ($this->request->is('put', 'post')) {
+
+			$this->request->data['User']['id'] = $id;
+
+			if (!($this->User->save($this->request->data, true, array('id', 'email', 'first_name', 'last_name', 'date_of_birth', 'cell_number')))) {
+
+				$this->Session->setFlash(__('No se pudo editar el usuario %s', h($user['User']['email'])), 'flash_error');
+				return;
+			}
+
+			$this->Session->setFlash(__('El usuario %s ha sido editado', h($user['User']['email'])), 'flash_success');
+			return $this->redirect(array('administrador' => true, 'controller'=>'users', 'action' => 'searchUsers', 1));
+		}
 	}
 
 
-    public function administrator_changeUserAccoutStatus($id = null) {
+    public function administrator_changeOtherUserAccoutStatus($id = null) {
 
 		if (!($user = $this->User->findById($id))) {
 
@@ -590,7 +616,7 @@ class UsersController extends AppController {
 		}
 
 		if($user['User']['status'] != 'Activo' && $user['User']['status'] != 'Inactivo') {
-			
+
 			throw new NotFoundException('Estado del Usuario nulo o desconocido');
 		}
 
@@ -622,7 +648,7 @@ class UsersController extends AppController {
     }
 
 
-    public function administrator_deleteUser($id = null) {
+    public function administrator_deleteOtherUser($id = null) {
 
     	if (!($user = $this->User->findById($id))) {
 

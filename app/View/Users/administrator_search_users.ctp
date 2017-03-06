@@ -184,14 +184,14 @@
 												<?php echo $this->Html->link('<i class="glyphicon glyphicon-zoom-in"></i>',
 																				array('administrator' => true,
 																					  'controller' => 'users',
-																					  'action' => 'viewUser',
+																					  'action' => 'editOtherUser',
 																					   $user['User']['id']),
 
 																				array('class' => 'btn btn-xs btn-info',
 																					  'escape' => false,
 																					  'data-toggle' => 'tooltip',
 																			  		  'data-placement' => 'bottom',
-																					  'title' => 'Ver Detalles Usuario',
+																					  'title' => 'Editar Usuario',
 																				)
 												);
 
@@ -203,7 +203,7 @@
 													echo $this->Html->link('<i class="glyphicon glyphicon-ban-circle"></i>',
 																				array('administrator' => true,
 																					  'controller' => 'users',
-																				  	  'action' => 'changeUserAccoutStatus',
+																				  	  'action' => 'changeOtherUserAccoutStatus',
 																				       $user['User']['id']),
 
 																				array('class' => 'btn btn-xs btn-danger',
@@ -223,7 +223,7 @@
 													echo $this->Html->link('<i class="glyphicon glyphicon-plus"></i>',
 																				array('administrator' => true,
 																					  'controller' => 'users',
-																				  	  'action' => 'changeUserAccoutStatus',
+																				  	  'action' => 'changeOtherUserAccoutStatus',
 																				      $user['User']['id']),
 
 																				array('class' => 'btn btn-xs btn-default',
@@ -241,7 +241,7 @@
 												echo $this->Html->link('<i class="glyphicon glyphicon-remove"></i>',
 																			array('administrator' => true,
 																				  'controller' => 'users',
-																			  	  'action' => 'deleteUser',
+																			  	  'action' => 'deleteOtherUser',
 																			      $user['User']['id']),
 
 																			array('class' => 'btn btn-xs btn-default',
