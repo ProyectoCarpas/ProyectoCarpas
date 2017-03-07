@@ -1,5 +1,4 @@
-
-<?php $this->assign('head_description', 'Detalles Usuario ....');?>
+<?php $this->assign('head_description', 'Detalles Usuario');?>
 
 <div class="container">
     <div class="well">
@@ -8,46 +7,24 @@
 
             <div class="col-md-3">
 
-                <?php echo $this->element('user_actions_lateral_menu'); ?>
+                <?php echo $this->element('user_actions_lateral_menu_element'); ?>
             </div>
 
-            <div class="col-md-9 lado_derecho">
+            <div class="col-md-9">
 
-                <div class="row titulo">
+                <h4>Datos Personales</h4>
 
-                    <div class="col-xs-12">
+                <p> <span> Username: </span> <?php echo $user['User']['email']; ?></p>
 
-                       <h3>Datos Personales</h3>
+                <p> <span> Nombre: </span> <?php echo $user['User']['first_name']; ?></p>
 
-                    </div>
+                <p> <span> Apellido: </span> <?php echo $user['User']['last_name']; ?></p>
 
-                </div>
+                <p> <span> Email: </span> <?php echo $user['User']['date_of_birth']; ?></p>
 
-                <div class="row datos">
+                <p> <span> Número Celular: </span> <?php echo $user['User']['cell_number']; ?></p>
 
-                    <div class="col-xs-12">
-
-                        <p> <span class="detalles"> Username: </span> <?php echo $user['User']['email']; ?></p>
-
-                        <p> <span class="detalles"> Nombre: </span> <?php echo $user['User']['first_name']; ?></p>
-
-                        <p> <span class="detalles"> Apellido: </span> <?php echo $user['User']['last_name']; ?></p>
-
-                        <p> <span class="detalles"> Email: </span> <?php echo $user['User']['date_of_birth']; ?></p>
-
-                        <p> <span class="detalles"> Número Celular: </span> <?php echo $user['User']['cell_number']; ?></p>
-
-                    </div>
-
-                </div> <!-- Cierra row-->
-
-                
-
-            </div> <!--fin Col-md-9 -->
-
-
-        </div> <!--fin ROW -->
-
+            </div>
+        </div> <!-- Cierra row-->
     </div><!-- well-->
 </div><!-- container -->
-

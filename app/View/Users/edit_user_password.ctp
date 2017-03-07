@@ -1,117 +1,102 @@
-<?php $this->assign('head_description', 'Editar Pass');?>
+<?php $this->assign('head_description', 'Editar User Password');?>
 
-<div class="container well">
+<div class="container">
+    <div class="well">
 
-    <div class="col-md-3">
+        <div class="row">
 
-            <?php echo $this->element('user_actions_lateral_menu'); ?>
-    </div>
+            <div class="col-md-3">
 
-       <!-- Le dedico toda la fila al titulo -->
-    <div class="col-md-9 lado_derecho">
-
-        <?php echo $this->Form->create('User', array('id' => 'edit_pass',
-                                                     'class' => 'form-horizontal',
-
-                                                     'inputDefaults' => array(
-                                                                        'div' => array(
-                                                                                       'class' => 'form-group has-feedback'
-                                                                                      ),
-                                                                        'class' => 'form-control',
-                                                                        'autocomplete' => 'off'
-                                                                        )
-                                                    ));
-        ?>
-
-
-        <div class="row titulo">
-            <div class="col-xs-12">
-
-                <h4>Cambiar Contraseña</h4>
-
+                <?php echo $this->element('user_actions_lateral_menu_element'); ?>
             </div>
 
-        </div> <!-- Cierra row-->
+            <div class="col-md-9">
 
-
-        <div class="row formulario">
-
-            <div class="col-xs-12">
-
-                <!-- Campo ID y campo usado para el LOGUIN los debemos poner como HIDDEN -->
-                <?php echo $this->Form->hidden('id'); ?>
-                <?php echo $this->Form->hidden('mail'); ?>
-
-
-                <?php echo $this->Form->input('old_password', array('between' => '<div class="col-md-5">',
-                                                                    'after' =>   '</div>',
-                                                                    'placeholder' => 'Vieja Contraseña',
-                                                                    'type' => 'password',
-                                                                    'label' => array('class' => 'col-md-4 col-lg-3 control-label',
-                                                                                     'text'  => 'Vieja Contraseña <span> * </span>'
-                                                                                    ),
-
-                                                                    'id' => 'old_password'
-                                            ));
+                <h4> Cambiar Contraseña </h4>
+                
+                <?php
+                echo $this->Form->create('User',
+                                    array('id' => 'editUserPassword',
+                                          'class' => 'form-horizontal',
+                                          'novalidate' => 'novalidate',
+                                          'inputDefaults' => array(
+                                                              'div' => array(
+                                                                          'class' => 'form-group has-feedback'
+                                                                        ),
+                                                              'class' => 'form-control',
+                                                              'autocomplete' => 'off'
+                                                              )
+                                    )
+                );
                 ?>
 
-                <?php echo $this->Form->input('password_update', array('between' => '<div class="col-md-5">',
-                                                                       'after' =>   '</div>',
-                                                                       'placeholder' => 'Contraseña',
-                                                                       'type' => 'password',
-                                                                       'label' => array('class' => 'col-md-4 col-lg-3 control-label',
-                                                                                        'text'  => 'Nueva Contraseña <span> * </span>'
-                                                                                      )
-                                            ));
+                <?php
+                echo $this->Form->hidden('id');
+                echo $this->Form->hidden('mail');
+
+                echo $this->Form->input('old_password',
+                                            array('between' => '<div class="col-md-5">',
+                                                  'after' =>   '</div>',
+                                                  'placeholder' => 'Vieja Contraseña',
+                                                  'type' => 'password',
+                                                  'label' => array('class' => 'col-md-4 col-lg-3 control-label',
+                                                                   'text'  => 'Vieja Contraseña <span> * </span>'
+                                                             )
+                ));
+
+                echo $this->Form->input('password_update',
+                                            array('between' => '<div class="col-md-5">',
+                                                  'after' =>   '</div>',
+                                                  'placeholder' => 'Contraseña',
+                                                  'type' => 'password',
+                                                  'label' => array('class' => 'col-md-4 col-lg-3 control-label',
+                                                                   'text'  => 'Nueva Contraseña <span> * </span>'
+                                                             )
+                ));
+
+                echo $this->Form->input('password_confirm_update',
+                                            array('between' => '<div class="col-md-5">',
+                                                  'after' =>   '</div>',
+                                                  'placeholder' => 'Repita Nueva Contraseña',
+                                                  'type' => 'password',
+                                                  'label' => array('class' => 'col-md-4 col-lg-3 control-label',
+                                                                   'text'  => 'Repita Contraseña <span> * </span>'
+                                                            )
+                ));
                 ?>
 
-                <?php echo $this->Form->input('password_confirm_update', array('between' => '<div class="col-md-5">',
-                                                                               'after' =>   '</div>',
-                                                                               'placeholder' => 'Repita Nueva Contraseña',
-                                                                               'type' => 'password',
-                                                                               'label' => array('class' => 'col-md-4 col-lg-3 control-label',
-                                                                                                'text'  => 'Repita Contraseña <span> * </span>'
-                                                                                               )
-                                            ));
-                ?>
+                <div class="row">
 
+                    <div class="col-xs-12 col-md-8 col-md-offset-4 col-lg-9 col-lg-offset-3">
+
+                        <?php
+                        echo $this->Html->link('<span class="glyphicon glyphicon-circle-arrow-left"></span> Volver',
+
+                                                  array('controller' => 'users', 'action' => 'viewUser',
+                                                        $this->Session->read('Auth.User.id')),
+                                                  array('class' => 'btn btn-primary btn-sm',
+                                                           'escape' => false));
+
+                        echo "&nbsp;&nbsp;";
+
+                        echo $this->Form->button('<span class="glyphicon glyphicon-floppy-saved"></span> Guardar',
+
+                                                  array('type' => 'submit',
+                                                        'class' => 'btn btn-info btn-sm',
+                                                        'escape' => false
+                                                      )
+                        );
+                        ?>
+
+                    </div>
+                </div> <!-- row buttons -->
+
+                <?php echo $this->Form->end(); ?>
 
             </div>
-
-        </div> <!-- Cierro row-->
-
-
-        <div class="row botones">
-
-              <!-- Dejo 2 columnas vacias-->
-              <div class="col-xs-12 col-md-8 col-md-offset-4 col-lg-9 col-lg-offset-3">
-
-                  <?php echo $this->Html->link('<span class="glyphicon glyphicon-circle-arrow-left"></span> Volver',
-
-                                            array('controller' => 'users', 'action' => 'viewUser',
-                                                   $this->Session->read('Auth.User.id')),
-                                            array('class' => 'btn btn-primary btn-sm',
-                                                   'escape' => false));
-                  ?>
-
-                  <?php echo $this->Form->button('<span class="glyphicon glyphicon-floppy-saved"></span> Guardar',
-
-                           array(
-                                  'type' => 'submit',
-                                  'class' => 'btn btn-info btn-sm',
-                                  'escape' => false
-                                  ));
-                  ?>
-
-              </div>
-
-        </div> <!-- Cierro row-->
-
-        <?php echo $this->Form->end(); ?>
-
-    </div> <!-- Cierra lado derecho-->
-
-</div><!-- Cierro container -->
+        </div> <!-- row -->
+    </div> <!-- well -->
+</div> <!-- container -->
 
 
 <!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->

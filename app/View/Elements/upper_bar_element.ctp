@@ -62,13 +62,13 @@
 
 							<?php if($this->Html->isAdministratorUser()){ ?>
 
-								<?php echo $this->element('upper_bar_administrator_user_menu_button'); ?>
+								<?php echo $this->element('upper_bar_administrator_user_menu_button_element'); ?>
 
 							<?php }?>
 
 							<?php if($this->Html->isUserLogged()){ ?>
 
-								<?php echo $this->element('upper_bar_user_menu_button'); ?>
+								<?php echo $this->element('upper_bar_user_menu_button_element'); ?>
 
 							<?php }?>
 						</div>

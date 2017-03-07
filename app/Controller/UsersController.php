@@ -24,7 +24,7 @@ class UsersController extends AppController {
 				}
 			}
 		}
-	
+
 		// Validation for Administrator Rol Functions
 		if(isset($this->request->prefix) && ($this->request->prefix == 'administrator')) {
 
@@ -46,6 +46,15 @@ class UsersController extends AppController {
 		if($this->request->is('post')) {
 
 			$this->User->recursive = -1;
+
+			if(empty($this->request->data['User']['email'])){
+
+				unset($this->request->data['User']['password']);
+
+				$this->Session->setFlash('Debe ingresar su email', 'flash_error');
+				return;
+
+			}
 
 			if(!($user = $this->User->findByemail($this->request->data['User']['email']))) {
 
@@ -115,7 +124,7 @@ class UsersController extends AppController {
 
 			if (!($this->User->save($this->request->data, false, array('id', 'email', 'first_name', 'last_name', 'date_of_birth', 'cell_number', 'status', 'password', 'token_hash', 'role_id')))) {
 
-				$this->Session->setFlash('Se ha producido un error en el envío del email de confirmación. Intente nuevamente.', 'flash_error');
+				$this->Session->setFlash('Error inesperado. Fallo envío de email de confirmación. Intente nuevamente.', 'flash_error');
 				return;
 			}
 
@@ -273,9 +282,17 @@ class UsersController extends AppController {
 
 		if ($this->request->is('put', 'post')) {
 
+			$this->User->set($this->request->data);
+
+			if (!$this->User->validates()) {
+
+				$this->Session->setFlash('Se han encontrado errores en el formulario', 'flash_error');
+				return;
+			}
+
 			$this->request->data['User']['id'] = $id;
 
-			if (!($this->User->save($this->request->data, true, array('id', 'email', 'first_name', 'last_name', 'date_of_birth', 'cell_number')))) {
+			if (!($this->User->save($this->request->data, false, array('id', 'email', 'first_name', 'last_name', 'date_of_birth', 'cell_number')))) {
 
 				$this->Session->setFlash('Error inesperado. No se ha podido modificar la información del usuario','flash_error');
 				return;
@@ -409,7 +426,7 @@ class UsersController extends AppController {
 		}
 
 		if(!($user = $this->User->findBytoken_hash($token))) {
-			
+
 			$this->Session->setFlash('Clave corrumpida. Por favor vuelva a resetear su contraseña. El link de reseteo solo funciona una vez', 'flash_error');
 			return $this->redirect('/');
 		}
@@ -595,9 +612,17 @@ class UsersController extends AppController {
 
 		if ($this->request->is('put', 'post')) {
 
+			$this->User->set($this->request->data);
+
+			if (!$this->User->validates()) {
+
+				$this->Session->setFlash('Se han encontrado errores en el formulario', 'flash_error');
+				return;
+			}
+
 			$this->request->data['User']['id'] = $id;
 
-			if (!($this->User->save($this->request->data, true, array('id', 'email', 'first_name', 'last_name', 'date_of_birth', 'cell_number')))) {
+			if (!($this->User->save($this->request->data, false, array('id', 'email', 'first_name', 'last_name', 'date_of_birth', 'cell_number')))) {
 
 				$this->Session->setFlash(__('No se pudo editar el usuario %s', h($user['User']['email'])), 'flash_error');
 				return;

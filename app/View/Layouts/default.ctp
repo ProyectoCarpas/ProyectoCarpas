@@ -19,7 +19,7 @@
 <body>
 	<div id="container">
 		<div id="header">
-			<?php echo $this->element('upper_bar'); ?>
+			<?php echo $this->element('upper_bar_element'); ?>
 			<?php echo $this->Session->flash(); ?>
 		</div>
 		<div id="content">

@@ -1,85 +1,74 @@
+<?php $this->assign('head_description', 'Contraseña olvidada');?>
 
-<?php $this->assign('head_description', 'Resetear Pass -');?>
+<div class="container">
+    <div class="well">
 
+        <div class="row">
 
-<div class="container well">
+            <div class="col-xs-12">
 
-    <div class="row">
+                <h4> Resetear Contraseña </h4>
 
-        <div class="col-lg-6 col-md-6 col-sm-5">
+                <?php
+                echo $this->Form->create('User',
+                                            array('id' => 'forgetUserPassword',
+                                                  'class' => 'form-horizontal',
+                                                  'novalidate' => 'novalidate',
+                                                  'inputDefaults' => array(
+                                                                        'div' => array(
+                                                                                       'class' => 'form-group has-feedback'
+                                                                                      ),
+                                                                        'class' => 'form-control',
+                                                                        'autocomplete' => 'off'
+                                                                    )
+                                            )
+                );
+             
+                echo $this->Form->input('email',
+                                            array('between' => '<div class="col-sm-5 col-md-4">',
+                                                  'after' =>   '</div>',
+                                                  'placeholder' => 'Email',
+                                                  'autofocus'=>'autofocus',
+                                                  'label' => array('class' => 'col-sm-3 col-md-2 control-label',
+                                                                   'text'  => 'Email <span> * </span>'
+                                                            )
+                ));
+                ?>
 
-              <h4>Resetear Contraseña</h4>
-        </div>
+                <div class="row">
 
-    </div> <!-- CIERRA ROW -->
-
-    <!-- ////////////////////////// -->
-
-    <?php echo $this->Form->create('User', array(   'id' => 'reset_password',
-                                                    'class' => 'form-horizontal',
-
-                                                    'inputDefaults' => array(
-
-                                                                            'div' => array(
-                                                                                           'class' => 'form-group has-feedback'
-                                                                                          ),
-                                                                            'class' => 'form-control'
-                                                                          )
-                                                    ));
-    ?>
-
-    <!-- ////////////////////////// -->
-
-    <div class="row formulario">
-
-            <?php echo $this->Form->input('email', array('between' => '<div class="col-sm-5 col-md-4">',
-                                                         'after' =>   '</div>',
-                                                         'placeholder' => 'Email',
-                                                         'autofocus'=>'autofocus',
-                                                         'label' => array('class' => 'col-sm-3 col-md-2 control-label',
-                                                                          'text'  => 'Email <span> * </span>'
-                                                                          )
-                                        ));
-            ?>
-
-    </div> <!-- CIERRA ROW -->
-
-    <!-- ////////////////////////// -->
-
-
-    <div class="row botones">
-
-        <div class="form-group">
-
-                    <!-- Dejo 2 columnas vacias-->
                     <div class="col-xs-12 col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
 
-                        <?php echo $this->Form->button('<span class="glyphicon glyphicon-arrow-right"></span> Enviar',
+                        <?php
+                        echo $this->Html->link('<span class="glyphicon glyphicon-circle-arrow-left"></span> Volver',
 
-                                 array(
-                                        'type' => 'submit',
-                                        'class' => 'btn btn-info btn-sm',
-                                        'escape' => false
-                                        ));
-                        ?>
+                                                array('controller' => 'users', 'action' => 'login'),
+                                                array('class' => 'btn btn-primary btn-sm',
+                                                      'escape' => false
+                                                )
+                        );
 
-                        <?php echo $this->Html->link('<span class="glyphicon glyphicon-remove-circle"></span> Volver',
+                        echo "&nbsp;&nbsp;";
 
-                                                  array('controller' => 'users', 'action' => 'login'
-                                                         ),
-                                                  array('class' => 'btn btn-primary btn-sm',
-                                                         'escape' => false));
+                        echo $this->Form->button('<span class="glyphicon glyphicon-floppy-saved"></span> Enviar',
+                                                array('type' => 'submit',
+                                                      'class' => 'btn btn-info btn-sm',
+                                                      'escape' => false
+                                                )
+                        );
                         ?>
 
                     </div>
-        </div>
+                </div> <!-- row buttons-->
 
-    </div> <!-- Cierra row-->
+                <?php echo $this->Form->end(); ?>
+
+            </div>
+        </div> <!-- row -->
+    </div> <!-- well -->
+</div> <!-- container -->
 
 
-    <?php echo $this->Form->end(); ?>
-
-</div><!-- Cierro container -->
 
 <!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
 

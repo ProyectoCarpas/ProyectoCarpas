@@ -1,7 +1,5 @@
 <div id="userActionsLateralMenu" class="list-group" data-actual-view="<?php echo $this->action; ?>">
    
-      <div> Operaciones Usuario </div>
-
       <?php echo $this->Html->link('<span class="glyphicon glyphicon-eye-open"></span> Detalles',
 
                                                       array('controller' => 'users',
@@ -42,5 +40,4 @@
                                                             'class' =>'list-group-item',
                                                             'escape' => false),
                                                      sprintf('Esta seguro que desea eliminar su Cuenta?'));?>
-    </div>
 </div>
