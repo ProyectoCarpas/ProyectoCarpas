@@ -24,7 +24,8 @@ class UsersController extends AppController {
 				}
 			}
 		}
-
+	
+		// Validation for Administrator Rol Functions
 		if(isset($this->request->prefix) && ($this->request->prefix == 'administrator')) {
 
 			if( $this->Session->check('Auth.User') AND $this->Session->read('Auth.User.role_id') == Configure::read('Administrador')) {
@@ -63,7 +64,7 @@ class UsersController extends AppController {
 				return;
 			}
 
-			$this->Session->setFlash('Usuario logueado', 'flash_success');
+			$this->Session->setFlash('Usuario logueado exitosamente', 'flash_success');
 			return $this->redirect($this->Auth->redirectUrl());
 		}
 	}
@@ -93,7 +94,7 @@ class UsersController extends AppController {
 
 			if (!$this->User->validates()) {
 
-				$this->Session->setFlash('Corrija los campos son incorrectos', 'flash_error');
+				$this->Session->setFlash('Se han encontrado errores en el formulario', 'flash_error');
 				return;
 			}
 
@@ -114,7 +115,7 @@ class UsersController extends AppController {
 
 			if (!($this->User->save($this->request->data, false, array('id', 'email', 'first_name', 'last_name', 'date_of_birth', 'cell_number', 'status', 'password', 'token_hash', 'role_id')))) {
 
-				$this->Session->setFlash('Se ha producido algun error. Intente nuevamente.', 'flash_error');
+				$this->Session->setFlash('Se ha producido un error en el envío del email de confirmación. Intente nuevamente.', 'flash_error');
 				return;
 			}
 
@@ -167,7 +168,7 @@ class UsersController extends AppController {
 		// If Session Data Variables don't exist, it means the account has been already activated.
 		if(!$urlForActivation && !$userEmail) {
 
-			$this->Session->setFlash('Su cuenta ya ha sido activada', 'flash_success');
+			$this->Session->setFlash('Su cuenta ya ha sido activada exitosamente', 'flash_success');
 			return $this->redirect('/');
 		}
 
@@ -237,7 +238,7 @@ class UsersController extends AppController {
 		}
 
 		else {
-			$this->Session->setFlash('No se pudo Activar la cuenta del usuario. Vuelva a intentar.', 'flash_error');
+			$this->Session->setFlash('No se ha podido activar su cuenta de usuario. Vuelva a intentarlo.', 'flash_error');
 			return $this->redirect(array('controller'=>'users', 'action'=>'login'));
 		}
 	}
@@ -276,7 +277,7 @@ class UsersController extends AppController {
 
 			if (!($this->User->save($this->request->data, true, array('id', 'email', 'first_name', 'last_name', 'date_of_birth', 'cell_number')))) {
 
-				$this->Session->setFlash('Hubo un error y no se pudo modificar el Perfil','flash_error');
+				$this->Session->setFlash('Error inesperado. No se ha podido modificar la información del usuario','flash_error');
 				return;
 			}
 
@@ -304,10 +305,10 @@ class UsersController extends AppController {
 
 			$this->User->set($this->request->data);
 
-			// Check validations for 'password_update' and 'confirm_password_update' fields.
-			if (!($this->User->validates())) {
+			// Check validations for 'old_paasword', 'password_update' and 'password_confirm_update' fields.
+			if (!($this->User->validates(array('fieldList'=>array('old_password', 'password_update', 'password_confirm_update'))))) {
 
-				$this->Session->setFlash('Corrija los campos son incorrectos', 'flash_error');
+				$this->Session->setFlash('Se han encontrado errores en el formulario', 'flash_error');
 				return;
 			}
 
@@ -315,7 +316,7 @@ class UsersController extends AppController {
 
 			if (!($this->User->save($this->request->data, false, array('id', 'password')))) {
 
-				$this->Session->setFlash('Hubo un error y no se pudo editar la contraseña', 'flash_error');
+				$this->Session->setFlash('Error inesperado. No se pudo editar la contraseña', 'flash_error');
 				return;
 			}
 
@@ -391,7 +392,7 @@ class UsersController extends AppController {
 
 			//============EndEmail=============//
 
-			$this->Session->setFlash('Revise su correo para resetear su contraseña', 'flash_success');
+			$this->Session->setFlash('Revise su correo electrónico para resetear su contraseña', 'flash_success');
 			return $this->redirect('/');
 		}
 	}
@@ -404,7 +405,7 @@ class UsersController extends AppController {
 		$this->User->recursive = -1;
 
 		if(!$token) {
-			throw new NotFoundException('Token invalido');
+			throw new NotFoundException('Token inválido');
 		}
 
 		if(!($user = $this->User->findBytoken_hash($token))) {
@@ -424,7 +425,7 @@ class UsersController extends AppController {
 				unset($this->request->data['User']['password']);
 				unset($this->request->data['User']['password_confirm']);
 
-				$this->Session->setFlash('Corrija los campos incorrectos', 'flash_error');
+				$this->Session->setFlash('Se han encontrado errores en el formulario', 'flash_error');
 				return;
 			}
 
@@ -453,12 +454,12 @@ class UsersController extends AppController {
 		if ($this->User->delete($id, true)) {
 
 			$this->Session->destroy('User');
-			$this->Session->setFlash('Su cuenta ha sido eliminada', 'flash_success');
+			$this->Session->setFlash('Su cuenta ha sido eliminada exitosamente', 'flash_success');
 			return $this->redirect('/');
 		}
 		else {
 
-			$this->Session->setFlash('No se pudo cambiar el Estado del Usuario. Intente mas tarde.', 'flash_error');
+			$this->Session->setFlash('No se ha podido eliminar su cuenta. Intente mas tarde.', 'flash_error');
 			return $this->redirect('/');
 		}
     }
@@ -602,7 +603,7 @@ class UsersController extends AppController {
 				return;
 			}
 
-			$this->Session->setFlash(__('El usuario %s ha sido editado', h($user['User']['email'])), 'flash_success');
+			$this->Session->setFlash(__('El usuario %s ha sido editado exitosamente', h($user['User']['email'])), 'flash_success');
 			return $this->redirect(array('administrador' => true, 'controller'=>'users', 'action' => 'searchUsers', 1));
 		}
 	}
@@ -617,7 +618,7 @@ class UsersController extends AppController {
 
 		if($user['User']['status'] != 'Activo' && $user['User']['status'] != 'Inactivo') {
 
-			throw new NotFoundException('Estado del Usuario nulo o desconocido');
+			throw new NotFoundException('Estado del usuario nulo o desconocido');
 		}
 
 		$this->User->id = $id;
@@ -626,7 +627,7 @@ class UsersController extends AppController {
 
 			if ($this->User->saveField('status', 'Inactivo')) {
 
-				$this->Session->setFlash(__('La cuenta del usuario %s ha sido desactivada', h($user['User']['email'])), 'flash_success');
+				$this->Session->setFlash(__('La cuenta del usuario %s ha sido desactivada exitosamente', h($user['User']['email'])), 'flash_success');
 			}
 			else {
 				$this->Session->setFlash(__('No se pudo desactivar la cuenta del usuario $s', h($user['User']['email'])), 'flash_error');
@@ -637,7 +638,7 @@ class UsersController extends AppController {
 
 			if ($this->User->saveField('status', 'Activo')) {
 
-				$this->Session->setFlash(__('La cuenta del usuario %s ha sido activada', h($user['User']['email'])), 'flash_success');
+				$this->Session->setFlash(__('La cuenta del usuario %s ha sido activada exitosamente', h($user['User']['email'])), 'flash_success');
 			}
 			else {
 				$this->Session->setFlash(__('No se pudo activar la cuenta del usuario $s', h($user['User']['email'])), 'flash_error');
@@ -659,7 +660,7 @@ class UsersController extends AppController {
 
 		if ($this->User->delete($id, true)) {
 
-			$this->Session->setFlash(__('La cuenta del usuario %s ha sido eliminada', h($user['User']['email'])), 'flash_success');
+			$this->Session->setFlash(__('La cuenta del usuario %s ha sido eliminada exitosamente', h($user['User']['email'])), 'flash_success');
 		}
 		else {
 			$this->Session->setFlash(__('No se pudo eliminar el usuario %s', h($user['User']['email'])), 'flash_error');
