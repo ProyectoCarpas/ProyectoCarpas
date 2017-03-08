@@ -1,117 +1,113 @@
-
 <?php $this->assign('head_description', 'Editar User');?>
 
-        <?php echo $this->Form->create('User', array('id' => 'edit',
-                                                         'class' => 'form-horizontal',
-                                                         'novalidate' => 'novalidate',
-                                                         'inputDefaults' => array(
-                                                                                'div' => array(
-                                                                                               'class' => 'form-group has-feedback'
-                                                                                              ),
-                                                                                'class' => 'form-control',
-                                                                                'autocomplete' => 'off'
-                                                                                )
-                                                            ));
-        ?>
+<div class="container">
+    <div class="well">
 
-        <div class="col-md-9">
+        <div class="row">
 
-            <div class="row titulo">
+            <div class="col-xs-12">
 
-                  <div class="col-xs-12">
-                      <h4>Editar Perfil</h4>
-                  </div>
+                <h4> Editar Perfil </h4>
+
+                <?php
+                echo $this->Form->create('User',
+                                    array('id' => 'editUser',
+                                          'class' => 'form-horizontal',
+                                          'novalidate' => 'novalidate',
+                                          'inputDefaults' => array(
+                                                              'div' => array(
+                                                                          'class' => 'form-group has-feedback'
+                                                                        ),
+                                                              'class' => 'form-control',
+                                                              'autocomplete' => 'off'
+                                                              )
+                                    )
+                );
+
+                echo $this->Form->hidden('id');
+
+                echo $this->Form->input('email',
+                                            array('between' => '<div class="col-sm-9 col-md-7 col-lg-6">',
+                                                  'after' =>  '</div>',
+                                                  'placeholder' => 'Email...',
+                                                  'readonly' => 'readonly',
+                                                  'label' => array('class' => 'col-sm-3 col-md-2 control-label',
+                                                                  'text'  => 'Email <span> * </span>'
+                                                            )
+                ));
+
+                echo $this->Form->input('first_name',
+                                            array('between' => '<div class="col-sm-9 col-md-7 col-lg-6">',
+                                                  'after' => '</div>',
+                                                  'label' => array('class' => 'col-sm-3 col-md-2 control-label',
+                                                                   'text'  => 'Nombre <span> * </span>'
+                                                            )
+                ));
+
+                echo $this->Form->input('last_name',
+                                            array('between' => '<div class="col-sm-9 col-md-7 col-lg-6">',
+                                                  'after' =>  '</div>',
+                                                  'placeholder' => 'Apellido',
+                                                  'label' => array('class' => 'col-sm-3 col-md-2 control-label',
+                                                                   'text'  => 'Apellido <span> * </span>'
+                                                            )
+                ));
+
+
+                echo $this->Form->input('date_of_birth',
+                                            array('between' => '<div class="col-sm-9 col-md-7 col-lg-6">',
+                                                  'after' =>   '</div>',
+                                                  'placeholder' => 'Fecha de Nacimiento',
+                                                  'label' => array('class' => 'col-sm-3 col-md-2 control-label',
+                                                                   'text'  => 'Fecha de Nacimiento'
+                                                            )
+                ));
+
+                echo $this->Form->input('cell_number',
+                                            array('between' => '<div class="col-sm-9 col-md-7 col-lg-6">',
+                                                  'after' =>   '</div>',
+                                                  'placeholder' => 'Número Celular',
+                                                  'label' => array('class' => 'col-sm-3 col-md-2 control-label',
+                                                                   'text'  => 'Número Celular'
+                                                            )
+                ));
+                ?>
+
+                <div class="row">
+
+                    <div class="col-xs-12 col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
+
+                        <?php
+                        echo $this->Html->link('<span class="glyphicon glyphicon-circle-arrow-left"></span> Volver',
+
+                                                  array('controller' => 'users', 'action' => 'viewUser',
+                                                        $this->Session->read('Auth.User.id')),
+
+                                                  array('class' => 'btn btn-primary btn-sm',
+                                                        'escape' => false
+                                                  )
+                        );
+
+                        echo "&nbsp;&nbsp;";
+
+                        echo $this->Form->button('<span class="glyphicon glyphicon-floppy-saved"></span> Guardar',
+
+                                                  array('type' => 'submit',
+                                                        'class' => 'btn btn-info btn-sm',
+                                                        'escape' => false
+                                                  )
+                        );
+                        ?>
+
+                    </div>
+                </div> <!-- row button-->
+
+                <?php echo $this->Form->end(); ?>
 
             </div>
-
-            <div class="row formulario">
-
-                <div class="col-xs-12">
-
-                    <?php //echo $this->Form->hidden('id'); ?>
-
-                    <?php echo $this->Form->input('email', array('between' => '<div class="col-sm-9 col-md-7 col-lg-6">',
-                                             'after' =>   '</div>',
-                                             'placeholder' => 'Email...',
-                                             'readonly' => 'readonly',
-                                             'label' => array('class' => 'col-sm-3 col-md-2 control-label',
-                                                              'text'  => 'Email <span> * </span>'
-                                              )
-                            ));
-                    ?>
-
-                    <?php echo $this->Form->input('first_name', array('between' => '<div class="col-sm-9 col-md-7 col-lg-6">',
-                                                                      'after' =>   '</div>',
-                                                                      'label' => array('class' => 'col-sm-3 col-md-2 control-label',
-                                                                                       'text'  => 'Nombre <span> * </span>'
-                                                                      )
-                                                ));
-                    ?>
-
-                    <?php echo $this->Form->input('last_name', array('between' => '<div class="col-sm-9 col-md-7 col-lg-6">',
-                                                                  'after' =>   '</div>',
-                                                                  'placeholder' => 'Apellido',
-                                                                  'label' => array('class' => 'col-sm-3 col-md-2 control-label',
-                                                                                   'text'  => 'Apellido <span> * </span>'
-                                                                                  ),
-                                                ));
-                    ?>
-
-                    <?php echo $this->Form->input('date_of_birth', array('between' => '<div class="col-sm-9 col-md-7 col-lg-6">',
-                                                                  'after' =>   '</div>',
-                                                                  'placeholder' => 'Fecha de Nacimiento',
-                                                                  'label' => array('class' => 'col-sm-3 col-md-2 control-label',
-                                                                                   'text'  => 'Fecha de Nacimiento'
-                                                                                  ),
-                                                ));
-                    ?>
-
-                    <?php echo $this->Form->input('cell_number', array('between' => '<div class="col-sm-9 col-md-7 col-lg-6">',
-                                                                  'after' =>   '</div>',
-                                                                  'placeholder' => 'Número Celular',
-                                                                  'label' => array('class' => 'col-sm-3 col-md-2 control-label',
-                                                                                   'text'  => 'Número Celular'
-                                                                                  ),
-                                                ));
-                    ?>
-
-                </div>
-
-            </div> <!-- Cierra row-->
-
-            <!-- //////////////////// -->
-
-            <div class="row botones">
-
-                  <!-- Dejo 2 columnas vacias-->
-                  <div class="col-xs-12 col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
-
-                      <?php echo $this->Html->link('<span class="glyphicon glyphicon-circle-arrow-left"></span> Volver', 'javascript:history.go(-1)',
-                                                              array('class'=>'btn btn-primary btn-sm',
-                                                                    'escape' => false));  ?>
-
-                      <!-- Boton que envia el form al controller. Le puse type "submit" para que mande por POST.-->
-                      <?php echo $this->Form->button('<span class="glyphicon glyphicon-floppy-saved"></span> Guardar',
-
-                               array(
-                                      'type' => 'submit',
-                                      'class' => 'btn btn-info btn-sm',
-                                      'escape' => false
-                                      ));
-                      ?>
-
-                  </div>
-
-            </div> <!-- ROW Botones-->
-
-        </div> <!-- cierra col-md-9-->
-
-
-        <?php echo $this->Form->end(); ?>
-
-    </div> <!-- cierra ROW principal-->
-
-</div><!-- Cierro container -->
+        </div> <!-- row -->
+    </div> <!-- well -->
+</div> <!-- container -->
 
 
 
